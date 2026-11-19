@@ -6,7 +6,7 @@ credential = "c7ab6ff0df90974fa01fcd7971336791207c475324f1b288e5808e5f"
 
 [[use]]
 category = "lock"
-shape = "deadline_and_owner"
+shape = "timestamp_and_owner"
 label = "TSURU Lock"
 project = "TSURU"
 source = "token-ledger walk 2026-11-19: datum Constr 0 [Int(ms), Bytes(owner_pkh)]"

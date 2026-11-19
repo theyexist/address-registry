@@ -1,0 +1,9 @@
+credential = "8a0cfe6369fd7d7295e684ab2d6e8f62398a3bb53fffbe788ec67033"
+
+[[use]]
+category = "launchpad"
+label = "Solada"
+source = "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY"
+
+[use.derived_from]
+address = "addr1vx9qelnrd87h6u54u6z2kttw3a3rnz3mk5lll0nc3mr8qvc6dqa4y"

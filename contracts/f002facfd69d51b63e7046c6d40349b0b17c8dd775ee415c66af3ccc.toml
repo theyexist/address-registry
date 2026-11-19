@@ -1,0 +1,9 @@
+credential = "f002facfd69d51b63e7046c6d40349b0b17c8dd775ee415c66af3ccc"
+
+[[use]]
+category = "exchange"
+label = "Splash"
+source = "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY"
+
+[use.derived_from]
+address = "addr1x8cq97k066w4rd37wprvd4qrfxctzlyd6a67us2uv6hnen9j764lvrxdayh2ux30fl0ktuh27csgmpevdu89jlxppvrsgzvahe"

@@ -51,7 +51,7 @@ fn the_committed_artefact_reads_with_the_published_schema() {
     assert_eq!(lock.len(), 1);
     let lock = lock.first().expect("TOOL lock is authored");
     assert_eq!(lock.category, Category::Lock);
-    assert_eq!(lock.shape, Some(Shape::DeadlineAndOwner));
+    assert_eq!(lock.shape, Some(Shape::TimestampAndOwner));
     assert!(matches!(lock.derived_from, DerivedFrom::Address(_)));
 
     // Neither is claimed upstream, and both are still in `credentials` — that
@@ -131,12 +131,31 @@ fn resolve_reproduces_the_artefact_from_the_committed_inputs() {
     assert_eq!(fresh.authored, committed.authored);
     assert_eq!(fresh.credentials.len(), committed.credentials.len());
 
+    // The counts are checked against the artefact rather than against literals:
+    // the registry grows, and a number that has to be edited on every port is a
+    // number that will one day be edited to the wrong value.
     let report: ResolveReport = read(&out.join("report.json"));
-    assert_eq!(report.counts.authored, 2);
-    assert_eq!(report.counts.authored_credentials, 2);
-    assert_eq!(report.counts.authored_only, 2);
-    assert_eq!(report.counts.derived_from_verified, 1);
-    assert_eq!(report.counts.derived_from_attested, 1);
+    let uses: usize = committed.authored.values().map(Vec::len).sum();
+    let verified = committed
+        .authored
+        .values()
+        .flatten()
+        .filter(|use_of| matches!(use_of.derived_from, DerivedFrom::Address(_)))
+        .count();
+    let with_claim = committed
+        .authored
+        .keys()
+        .filter(|credential| !committed.claims(credential).is_empty())
+        .count();
+    assert_eq!(report.counts.authored, uses);
+    assert_eq!(report.counts.authored_credentials, committed.authored.len());
+    assert_eq!(report.counts.authored_with_upstream_claim, with_claim);
+    assert_eq!(
+        report.counts.authored_only,
+        committed.authored.len() - with_claim
+    );
+    assert_eq!(report.counts.derived_from_verified, verified);
+    assert_eq!(report.counts.derived_from_attested, uses - verified);
 
     let staking = report
         .authored

@@ -11,8 +11,8 @@
 //! Both map a credential to a **list** of uses. One address can do more than one
 //! job, so "what is this?" has more than one answer, and the registry does not
 //! pick. A consumer resolves the overload with the evidence it holds — a
-//! datumless UTxO is the wallet use; a datum matching `deadline_and_owner` is the
-//! lock use.
+//! datumless UTxO is the wallet use; a datum matching `timestamp_and_owner` is
+//! the lock use.
 
 use crate::claim::Claim;
 use crate::contract::{Category, Contract, Shape};
@@ -109,8 +109,8 @@ pub struct AuthoredRow {
     pub credential: String,
     pub category: Category,
     pub shape: Option<Shape>,
-    pub label: String,
-    pub project: String,
+    pub label: Option<String>,
+    pub project: Option<String>,
     pub upstream_claims: usize,
     pub derived_from: DerivedFromStatus,
 }

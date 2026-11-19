@@ -35,7 +35,7 @@ use std::collections::BTreeMap;
 use std::fmt;
 
 pub const MAGIC: &[u8; 4] = b"EXAR";
-pub const FORMAT: u16 = 2;
+pub const FORMAT: u16 = 4;
 pub const HEADER: usize = 12;
 pub const INDEX_RECORD: usize = 36;
 pub const CREDENTIAL: usize = 28;
@@ -103,8 +103,8 @@ impl Behaviour {
             let credential = credential_bytes(key)?;
             for contract in uses {
                 let mut record = Vec::new();
-                put_str(&mut record, &contract.label);
-                put_str(&mut record, &contract.project);
+                put_opt_str(&mut record, contract.label.as_deref());
+                put_opt_str(&mut record, contract.project.as_deref());
                 put_str(&mut record, &contract.source);
                 match &contract.derived_from {
                     DerivedFrom::Attested(reason) => {
@@ -210,8 +210,8 @@ impl Behaviour {
                     .ok_or(BehaviourError::EndsEarly)?,
                 at: 0,
             };
-            let label = record.string()?;
-            let project = record.string()?;
+            let label = record.optional_string()?;
+            let project = record.optional_string()?;
             let source = record.string()?;
             let derived_from = match record.byte()? {
                 0 => DerivedFrom::Attested(record.string()?),
@@ -288,8 +288,8 @@ pub const fn shape_code(shape: Option<Shape>) -> u8 {
     match shape {
         None => NO_SHAPE,
         Some(Shape::OwnerOnly) => 0,
-        Some(Shape::DeadlineAndOwner) => 1,
-        Some(Shape::DeadlineAndOwners) => 2,
+        Some(Shape::TimestampAndOwner) => 1,
+        Some(Shape::TimestampAndOwners) => 2,
     }
 }
 
@@ -297,8 +297,8 @@ pub const fn shape_from_code(code: u8) -> Option<Option<Shape>> {
     match code {
         NO_SHAPE => Some(None),
         0 => Some(Some(Shape::OwnerOnly)),
-        1 => Some(Some(Shape::DeadlineAndOwner)),
-        2 => Some(Some(Shape::DeadlineAndOwners)),
+        1 => Some(Some(Shape::TimestampAndOwner)),
+        2 => Some(Some(Shape::TimestampAndOwners)),
         _ => None,
     }
 }
@@ -334,6 +334,15 @@ fn hex(bytes: &[u8]) -> String {
 fn put_str(out: &mut Vec<u8>, value: &str) {
     put_len(out, value.len());
     out.extend_from_slice(value.as_bytes());
+}
+
+/// Length zero means absent. Validation refuses an empty label or project, so
+/// the two cannot be confused.
+fn put_opt_str(out: &mut Vec<u8>, value: Option<&str>) {
+    match value {
+        Some(value) => put_str(out, value),
+        None => put_len(out, 0),
+    }
 }
 
 fn put_len(out: &mut Vec<u8>, mut n: usize) {
@@ -386,6 +395,14 @@ impl<'a> Reader<'a> {
         self.string_of(len)
     }
 
+    fn optional_string(&mut self) -> Result<Option<String>, BehaviourError> {
+        let len = self.len()?;
+        if len == 0 {
+            return Ok(None);
+        }
+        self.string_of(len).map(Some)
+    }
+
     fn string_of(&mut self, len: usize) -> Result<String, BehaviourError> {
         String::from_utf8(self.take(len)?.to_vec()).map_err(|_| BehaviourError::NotUtf8)
     }
@@ -401,10 +418,10 @@ mod tests {
     fn lock_use() -> Contract {
         Contract {
             category: Category::Lock,
-            shape: Some(Shape::DeadlineAndOwner),
+            shape: Some(Shape::TimestampAndOwner),
             datum_example: None,
-            label: "TSURU Lock".to_string(),
-            project: "TSURU".to_string(),
+            label: Some("TSURU Lock".to_string()),
+            project: Some("TSURU".to_string()),
             source: "datum Constr 0 [Int(ms), Bytes(owner_pkh)]".to_string(),
             derived_from: DerivedFrom::Address(
                 "addr1w8r6kmlsm7gfwnaqrlxhjufnv7gjqlz82vj0rv5gukqguhcs9tj6j".to_string(),
@@ -417,8 +434,8 @@ mod tests {
             category: Category::Staking,
             shape: Some(Shape::OwnerOnly),
             datum_example: Some("d87981581c".to_string()),
-            label: "TSURU Staking".to_string(),
-            project: "TSURU".to_string(),
+            label: Some("TSURU Staking".to_string()),
+            project: Some("TSURU".to_string()),
             source: "datum Constr 0 [Bytes(owner_pkh)]".to_string(),
             derived_from: DerivedFrom::Attested("no address registered".to_string()),
         }
@@ -450,7 +467,7 @@ mod tests {
         let mut wallet = lock_use();
         wallet.category = Category::Wallet;
         wallet.shape = None;
-        wallet.label = "TSURU operator".to_string();
+        wallet.label = Some("TSURU operator".to_string());
         original
             .contracts
             .insert(LOCK.to_string(), vec![lock_use(), wallet]);
@@ -565,6 +582,23 @@ mod tests {
             decoded.get(LOCK).first().and_then(|use_of| use_of.shape),
             None
         );
+    }
+
+    #[test]
+    fn no_label_round_trips_as_absent() {
+        let mut original = behaviour();
+        let mut burn = lock_use();
+        burn.category = Category::Burn;
+        burn.shape = None;
+        burn.label = None;
+        burn.project = None;
+        original.contracts.insert(LOCK.to_string(), vec![burn]);
+        let decoded =
+            Behaviour::from_bytes(&original.to_bytes().expect("encodes")).expect("decodes");
+        let use_of = decoded.get(LOCK).first().expect("the record survives");
+        assert_eq!(use_of.label.as_deref(), None);
+        assert_eq!(use_of.project.as_deref(), None);
+        assert_eq!(use_of.category, Category::Burn);
     }
 
     #[test]

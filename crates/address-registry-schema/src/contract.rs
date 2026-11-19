@@ -47,10 +47,12 @@ pub enum Shape {
     /// `Constr 0 [Bytes(owner_pkh)]` — an owner and nothing else.
     OwnerOnly,
     /// `Constr 0 [Int(ms), Bytes(owner_pkh)]` — a timestamp and one owner.
-    DeadlineAndOwner,
+    /// Whether that timestamp is a deadline or a stake date is the category's
+    /// business: `$PERP` staking records when a position was staked.
+    TimestampAndOwner,
     /// `Constr 0 [Int(ms), [Bytes(owner_pkh)]]` — a timestamp and a list of
     /// owners. CrowdLock's shape, and deliberately not the singular one.
-    DeadlineAndOwners,
+    TimestampAndOwners,
 }
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
@@ -79,8 +81,14 @@ pub struct Contract {
     /// from, and a consumer's decoder is what asserts they read as declared.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub datum_example: Option<String>,
-    pub label: String,
-    pub project: String,
+    /// What the thing is called. Absent for a category that carries no name of
+    /// its own — a burn sink is identified by the category and its evidence.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub label: Option<String>,
+    /// Who operates it. Absent when the source does not say, which is most of
+    /// the compiled table — naming one would be a guess.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub project: Option<String>,
     pub source: String,
     pub derived_from: DerivedFrom,
 }
@@ -120,12 +128,11 @@ impl ContractFile {
 
 impl Contract {
     pub fn validate(&self, credential: &str) -> Result<(), Invalid> {
-        for (field, value) in [
-            ("label", &self.label),
-            ("project", &self.project),
-            ("source", &self.source),
-        ] {
-            if value.trim().is_empty() {
+        if self.source.trim().is_empty() {
+            return Err(Invalid::Empty("source"));
+        }
+        for (field, value) in [("label", &self.label), ("project", &self.project)] {
+            if value.as_ref().is_some_and(|value| value.trim().is_empty()) {
                 return Err(Invalid::Empty(field));
             }
         }
@@ -236,10 +243,10 @@ mod tests {
     fn use_of(derived_from: DerivedFrom) -> Contract {
         Contract {
             category: Category::Lock,
-            shape: Some(Shape::DeadlineAndOwner),
+            shape: Some(Shape::TimestampAndOwner),
             datum_example: None,
-            label: "TSURU Lock".to_string(),
-            project: "TSURU".to_string(),
+            label: Some("TSURU Lock".to_string()),
+            project: Some("TSURU".to_string()),
             source: "x".to_string(),
             derived_from,
         }

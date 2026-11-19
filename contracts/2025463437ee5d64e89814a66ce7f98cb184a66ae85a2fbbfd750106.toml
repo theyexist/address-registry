@@ -1,0 +1,9 @@
+credential = "2025463437ee5d64e89814a66ce7f98cb184a66ae85a2fbbfd750106"
+
+[[use]]
+category = "exchange"
+label = "DexHunter"
+source = "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY"
+
+[use.derived_from]
+address = "addr1zysz2335xlh96e8gnq22vm88lxxtrp9xdt595taml46szp3x5kap69lyf9hytqe2ec4qgkv2askpemxljak0vxyjt6cqm6ct6e"

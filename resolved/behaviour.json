@@ -1,7 +1,359 @@
 {
-  "format": 2,
-  "generated_at": "2026-11-19T04:10:59.985Z",
+  "format": 4,
+  "generated_at": "2026-11-19T04:24:01.924Z",
   "contracts": {
+    "0116b17c1f359bf0190cff4abf0ffc1adac8cc05288e0691f206a448": [
+      {
+        "category": "exchange",
+        "label": "Axo",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1zyq3dvturu6ehuqepnl540c0lsdd4jxvq55gup537gr2gjxx7u64pcdqm8ytz22z0ueuravgn79jf32ua3662tm2yztsyenz4a"
+        }
+      }
+    ],
+    "05d231799bdec5acab13e670b4107d81a5725814c2de7900d422fdb6": [
+      {
+        "category": "staking",
+        "shape": "timestamp_and_owner",
+        "datum_example": "d879821b0000019c247836ec581ccce969f5c0a16d5735feb093b883e4656f0dd4eb377dbc5d787391bf",
+        "label": "cnft.tools",
+        "project": "Perps",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY; shape and example from mitos-vesting-decode::perps_staking, a real position captured 2026-11-10",
+        "derived_from": {
+          "address": "addr1zyzayvten00vtt9tz0n8pdqs0kq62ujcznpdu7gq6s30md5uwrkupakg244k2dedgyzg0r6k0wgyplm2qdq0trqny98qv0xlua"
+        }
+      }
+    ],
+    "0c98fd7b3590ad664e4589ee484c6ec14eada08ee3f557706a62eab1": [
+      {
+        "category": "exchange",
+        "label": "Axo",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1zyxf3ltmxkg26ejwgky7ujzvdmq5atdq3m3l24msdf3w4vtxxjtcwkuntjk36ms25yahpmzr6y5u8gdc9h80mxyaxnqqgav76r"
+        }
+      }
+    ],
+    "158074bbfde02f3905afb423e10474944f01c006213469dbd756a278": [
+      {
+        "category": "exchange",
+        "label": "VyFi",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1wy2cqa9mlhsz7wg9476z8cgywj2y7qwqqcsng6wm6at2y7q7cjkqh"
+        }
+      }
+    ],
+    "1af84a9e697e1e7b042a0a06f061e88182feb9e9ada950b36a916bd5": [
+      {
+        "category": "exchange",
+        "label": "SaturnSwap",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1zyd0sj57d9lpu7cy9g9qdurpazqc9l4eaxk6j59nd2gkh4gdwqualaz4tsjecupk566prptjpge3kgzjg4nrsmhceehs894qvc"
+        }
+      }
+    ],
+    "2025463437ee5d64e89814a66ce7f98cb184a66ae85a2fbbfd750106": [
+      {
+        "category": "exchange",
+        "label": "DexHunter",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1zysz2335xlh96e8gnq22vm88lxxtrp9xdt595taml46szp3x5kap69lyf9hytqe2ec4qgkv2askpemxljak0vxyjt6cqm6ct6e"
+        }
+      }
+    ],
+    "203dc8bdd78da44d691b949f589515eae6ea0d7b6b24add0aa0213e9": [
+      {
+        "category": "airdropper",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY (label \"Unknown\": no operator named)",
+        "derived_from": {
+          "address": "addr1wysrmj9a67x6gntfrw2f7ky4zh4wd6sd0d4jftws4gpp86gw3kf46"
+        }
+      }
+    ],
+    "24ac187bf06c913e06d4b5f473283be3420e15190a6e070cc1be346b": [
+      {
+        "category": "launchpad",
+        "label": "LumpFun",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1wyj2cxrm7pkfz0sx6j6lgueg8035yrs4ry9xupcvcxlrg6cywmqny"
+        }
+      }
+    ],
+    "27d46ecbec94b052d8f875cf3beafd0e8ca40e8ad069f677e0a128ea": [
+      {
+        "category": "marketplace",
+        "label": "Wayup Offer",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY (Wayup, Offer)",
+        "derived_from": {
+          "attested": "mitos tools/market-ledger/venues.toml — venue.wayup.offer_creds"
+        }
+      }
+    ],
+    "2e36ac845a6f847d76acf553ed52c28b1fd1e8cee39ca5ba8c2e91d9": [
+      {
+        "category": "exchange",
+        "label": "Axo",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1zyhrdtyytfhcgltk4n648m2jc293l50gem3eefd63shfrk0h5z64hrwk4695jg90m9ugdh26z98ej0waqvt4xaazqv0s5y76a5"
+        }
+      }
+    ],
+    "2fbcfa4fa5a53553c644fb2fc4162206b526be60b86b881ffe57241f": [
+      {
+        "category": "exchange",
+        "label": "Axo",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1zyhme7j05kjn257xgnajl3qkygrt2f47vzuxhzqlletjg8uz886v0qt2dnnu5wkkw8v3rf2f2vvtcle9m9zsjtjx0xxqmh2m9h"
+        }
+      }
+    ],
+    "381cd9b620ce9d7c73dd45cfe207971cc79df79251003116094f6b36": [
+      {
+        "category": "vesting",
+        "shape": "timestamp_and_owners",
+        "datum_example": "d879821b000001a1a4bf19b181581c373998141ef305075d72dc53c57168fe495d3fb27ab2f94e85410c5b",
+        "label": "CrowdLock",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY; shape and example from a live UTxO in the token-holders fixture",
+        "derived_from": {
+          "address": "addr1zyupekdkyr8f6lrnm4zulcs8juwv080hjfgsqvgkp98kkdhym9auk0rgpz3lurkryvhl55046ak6ex4tlyj6mxxj735syr937w"
+        }
+      }
+    ],
+    "394ff8e31ad31a21876a22b68b99d187178b6341a0f70686b3fa0649": [
+      {
+        "category": "exchange",
+        "label": "Axo",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1zyu5l78rrtf35gv8dg3tdzue6xr30zmrgxs0wp5xk0aqvjfm82ff9sc3yyasd5e3un7khwhdkdnrxjw7s5ydfx4ctv4qj9nl25"
+        }
+      }
+    ],
+    "4020e7fc2de75a0729c3cc3af715b34d98381e0cdbcfa99c950bc3ac": [
+      {
+        "category": "exchange",
+        "label": "SundaeSwap",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1w9qzpelu9hn45pefc0xr4ac4kdxeswq7pndul2vuj59u8tqaxdznu"
+        }
+      }
+    ],
+    "464eeee89f05aff787d40045af2a40a83fd96c513197d32fbc54ff02": [
+      {
+        "category": "exchange",
+        "label": "Splash",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1z9ryamhgnuz6lau86sqytte2gz5rlktv2yce05e0h3207q3zhe74mrmvmrpvp6wf6h9mrnp55402k87mamfax54th56qawykfv"
+        }
+      }
+    ],
+    "486fd50580610334b3f59a851aead250627b8c72b2018a24e35918d2": [
+      {
+        "category": "exchange",
+        "label": "Axo",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1z9yxl4g9spssxd9n7kdg2xh26fgxy7uvw2eqrz3yudv335nxxjtcwkuntjk36ms25yahpmzr6y5u8gdc9h80mxyaxnqqnpxw2d"
+        }
+      }
+    ],
+    "55ff0e63efa0694e8065122c552e80c7b51768b7f20917af25752a7c": [
+      {
+        "category": "exchange",
+        "label": "Axo",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1z92l7rnra7sxjn5qv5fzc4fwsrrm29mgkleqj9a0y46j5l92j5lwvkjlmf6arlsvem0mezjpwlmvxss3mvt7elht080qw2pgsh"
+        }
+      }
+    ],
+    "5b4c324adfa71a5e305159876a6250714b79833e33d90a0aa177b72a": [
+      {
+        "category": "airdropper",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY (label \"Unknown\": no operator named)",
+        "derived_from": {
+          "address": "addr1w9d5cvj2m7n35h3s29vcw6nz2pc5k7vr8ceajzs259mmw2ssclmgy"
+        }
+      }
+    ],
+    "66a6bfe25e7e73c6c27ebbc1d13dd18b74da6eab003762e809a65c8f": [
+      {
+        "category": "exchange",
+        "label": "Axo",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1z9n2d0lztel883kz06aur5fa6x9hfknw4vqrwchgpxn9eraktxxydrvn6ljxm7xaph5cl4ywu8t27dsuegemf0q67q2swrujvv"
+        }
+      }
+    ],
+    "6b35255f5a768be1dd664d85529743e8632153b1a24621a7c20c9bea": [
+      {
+        "category": "exchange",
+        "label": "Axo",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1z94n2f2ltfmghcwavexc255hg05xxg2nkx3yvgd8cgxfh6j3r9tannw3jg6rfyjjedhqjnqq8jzvkq7fgeasv2jzg3zq40vp5d"
+        }
+      }
+    ],
+    "6de585ce16c7a4a101f55c06327d1501d65d54cba96afb4be66573bd": [
+      {
+        "category": "exchange",
+        "label": "Axo",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1z9k7tpwwzmr6fggp74wqvvnaz5qavh25ew5k476tuejh80dexxtanlp8q8l5ar0g979lsvlnl7ra2m33g7ku6hllng9smd8fqs"
+        }
+      }
+    ],
+    "6ec4acc3fbbd570ada625f24902777cec5d7a349fa0f3c7ba87b0cff": [
+      {
+        "category": "exchange",
+        "label": "DexHunter",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1w9hvftxrlw74wzk6vf0jfyp8wl8vt4arf8aq70rm4paselc46ptfq"
+        }
+      }
+    ],
+    "765fb5aeefdcd6a598ee998091c05d37241d4e6b761bd2a5032c2934": [
+      {
+        "category": "exchange",
+        "label": "Axo",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1w9m9lddwalwddfvca6vcpywqt5mjg82wddmph549qvkzjdq40p92x"
+        }
+      }
+    ],
+    "76e1a34faa7042df0fc54a45c53939c3a88ea00348b9327fa8520522": [
+      {
+        "category": "burn",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY: PREPROD ONLY. Native script, 9 bytes, published by us: `820182820402820501` = all [ invalid_before 2, invalid_hereafter 1 ]. Per the ledger CDDL, tag 4 is `invalid_before` (valid FROM that slot) and tag 5 is `invalid_hereafter` (valid UNTIL that slot), so this demands a transaction whose validity interval both starts at or after slot 2 AND ends at or before slot 1. No interval satisfies both, at any point in the chain's life, so nothing sent here is ever spendable. Unlike the mainnet sink above this is PROOF rather than inference: the whole script is quoted here, and `preprod_burn_sink_is_unsatisfiable` re-derives the credential and the address from those bytes, so a typo in either fails the build rather than silently naming a spendable address.",
+        "derived_from": {
+          "address": "addr_test1wpmwrg604fcy9hc0c49yt3fe88p63r4qqdytjvnl4pfq2gse5r9f5"
+        }
+      }
+    ],
+    "86ae9eebd8b97944a45201e4aec1330a72291af2d071644bba015959": [
+      {
+        "category": "exchange",
+        "label": "WingRiders",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1wxr2a8htmzuhj39y2gq7ftkpxv98y2g67tg8zezthgq4jkg0a4ul4"
+        }
+      }
+    ],
+    "8a0cfe6369fd7d7295e684ab2d6e8f62398a3bb53fffbe788ec67033": [
+      {
+        "category": "launchpad",
+        "label": "Solada",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1vx9qelnrd87h6u54u6z2kttw3a3rnz3mk5lll0nc3mr8qvc6dqa4y"
+        }
+      }
+    ],
+    "8f2fee1e5be61e3d58368a7d10db6eba60543bbe63885d7754a47155": [
+      {
+        "category": "exchange",
+        "label": "Axo",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1zx8jlms7t0npu02cx6986yxmd6axq4pmhe3cshth2jj8z40h5z64hrwk4695jg90m9ugdh26z98ej0waqvt4xaazqv0ssm7mq3"
+        }
+      }
+    ],
+    "905ab869961b094f1b8197278cfe15b45cbe49fa8f32c6b014f85a2d": [
+      {
+        "category": "launchpad",
+        "label": "snek.fun",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1xxg94wrfjcdsjncmsxtj0r87zk69e0jfl28n934sznu95tdj764lvrxdayh2ux30fl0ktuh27csgmpevdu89jlxppvrs2993lw"
+        }
+      }
+    ],
+    "9068a7a3f008803edac87af1619860f2cdcde40c26987325ace138ad": [
+      {
+        "category": "marketplace",
+        "label": "JPG.store Sale",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY (JPG.store, Sale, V1)",
+        "derived_from": {
+          "address": "addr1zxgx3far7qygq0k6epa0zcvcvrevmn0ypsnfsue94nsn3tvpw288a4x0xf8pxgcntelxmyclq83s0ykeehchz2wtspks905plm"
+        }
+      }
+    ],
+    "97f1732964905b3c71d12163968814ac5f3be77abc94830a84d32cf9": [
+      {
+        "category": "exchange",
+        "label": "DexHunter",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1wxtlzuefvjg9k0r36ysk895gzjk97wl8027ffqc2snfje7gkzkf3h"
+        }
+      }
+    ],
+    "9dee0659686c3ab807895c929e3284c11222affd710b09be690f924d": [
+      {
+        "category": "exchange",
+        "label": "Splash",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1xxw7upjedpkr4wq839wf983jsnq3yg40l4cskzd7dy8eyndj764lvrxdayh2ux30fl0ktuh27csgmpevdu89jlxppvrsgddq74"
+        }
+      }
+    ],
+    "9fd41da27127452544bb441905af003d6bc1ea1220eaa336d622121c": [
+      {
+        "category": "exchange",
+        "label": "Axo",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1zx0ag8dzwyn52f2yhdzpjpd0qq7khs02zgsw4gek6c3py88yranhazuukvkljzzene0nh4ckfqdhtj9zs97eaqcskt3qdnead3"
+        }
+      }
+    ],
+    "a65ca58a4e9c755fa830173d2a5caed458ac0c73f97db7faae2e7e3b": [
+      {
+        "category": "exchange",
+        "label": "Minswap",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1zxn9efv2f6w82hagxqtn62ju4m293tqvw0uhmdl64ch8uw6j2c79gy9l76sdg0xwhd7r0c0kna0tycz4y5s6mlenh8pq6s3z70"
+        }
+      }
+    ],
+    "a76f0fb801a29f591e9871576508d85b0b5f3c38774f65032f58fdad": [
+      {
+        "category": "marketplace",
+        "label": "Wayup Sale",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY (Wayup, Sale)",
+        "derived_from": {
+          "address": "addr1zxnk7racqx3f7kg7npc4weggmpdskheu8pm57egr9av0mtvasazx8r5xwqtnfjsfrnat3h6yrycd2hfm9qpg7d0hf50s7x4y79"
+        }
+      }
+    ],
+    "af97793b8702f381976cec83e303e9ce17781458c73c4bb16fe02b83": [
+      {
+        "category": "exchange",
+        "label": "WingRiders",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1wxhew7fmsup08qvhdnkg8ccra88pw7q5trrncja3dlszhqczc0qfe"
+        }
+      }
+    ],
     "b0ebdd68bd00f3a633c5097fe0243d69fb27abacd7f6959bec63c4c4": [
       {
         "category": "staking",
@@ -14,15 +366,256 @@
         }
       }
     ],
+    "c134d839a64a5dfb9b155869ef3f34280751a622f69958baa8ffd29c": [
+      {
+        "category": "exchange",
+        "label": "WingRiders",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1w8qnfkpe5e99m7umz4vxnmelxs5qw5dxytmfjk964rla98q605wte"
+        }
+      }
+    ],
+    "c1b35bb893529376effc4083dc0a0ed90a1c07fe09550885b37aa27f": [
+      {
+        "category": "burn",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY: Header byte 0x71 (type 7): script payment credential, no stake part — spending requires satisfying the script and there is no key that can. The script is Plutus V2, 46 bytes; its entire body is the trace string \"A cobra vai fumar!\" (18 bytes matching the 0x12 length prefix) — an always-fails validator whose whole content is an error message. 46 bytes leaves no room for conditional logic. Consistent with observation: 19,692 UTxOs accumulated, none ever consumed; $PERP alone has sent 133,627,385 (13.36% of supply). Checked 2026-08-29. CAVEAT: inferred from script size + embedded string, not from decompiling the UPLC — strong inference, not yet proof.",
+        "derived_from": {
+          "address": "addr1w8qmxkacjdffxah0l3qg8hq2pmvs58q8lcy42zy9kda2ylc6dy5r4"
+        }
+      }
+    ],
+    "c2c756eb9b1c8ac5d376b6ae7f474931bdecf40279b73ad4de57d0e7": [
+      {
+        "category": "exchange",
+        "label": "Axo",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1z8pvw4htnvwg43wnw6m2ul68fycmmm85qfumwwk5metape7qz7c82ntmclw5x7ywygqgwt6jtdk7zwqpnm2x6plvwlmqs486cn"
+        }
+      }
+    ],
+    "c3e28c36c3447315ba5a56f33da6a6ddc1770a876a8d9f0cb3a97c4c": [
+      {
+        "category": "exchange",
+        "label": "Minswap",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1w8p79rpkcdz8x9d6tft0x0dx5mwuzac2sa4gm8cvkw5hcnqst2ctf"
+        }
+      }
+    ],
+    "c727443d77df6cff95dca383994f4c3024d03ff56b02ecc22b0f3f65": [
+      {
+        "category": "marketplace",
+        "label": "JPG.store Sale",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY (JPG.store, Sale, V2)",
+        "derived_from": {
+          "address": "addr1w8rjw3pawl0kelu4mj3c8x20fsczf5pl744s9mxz9v8n7eg0fcr8k"
+        }
+      }
+    ],
     "c7ab6ff0df90974fa01fcd7971336791207c475324f1b288e5808e5f": [
       {
         "category": "lock",
-        "shape": "deadline_and_owner",
+        "shape": "timestamp_and_owner",
         "label": "TSURU Lock",
         "project": "TSURU",
         "source": "token-ledger walk 2026-11-19: datum Constr 0 [Int(ms), Bytes(owner_pkh)]",
         "derived_from": {
           "address": "addr1w8r6kmlsm7gfwnaqrlxhjufnv7gjqlz82vj0rv5gukqguhcs9tj6j"
+        }
+      }
+    ],
+    "c8b1252870525ab48a7d90ef29132f252b8391db63565d08cceddb66": [
+      {
+        "category": "exchange",
+        "label": "Axo",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1z8ytzffgwpf94dy20kgw72gn9ujjhqu3md34vhggenkakeh9pu8y80wluqzcq9qzg4fejnzkwzgsm4pdzrr5ls3fj6lsx06ddg"
+        }
+      }
+    ],
+    "cb684a69e78907a9796b21fc150a758af5f2805e5ed5d5a8ce9f76f1": [
+      {
+        "category": "exchange",
+        "label": "Splash",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1x89ksjnfu7ys02tedvslc9g2wk90tu5qte0dt4dge60hdudj764lvrxdayh2ux30fl0ktuh27csgmpevdu89jlxppvrsg0g63z"
+        }
+      }
+    ],
+    "cd2d50a2f836ab27a75f13d6b98a54c008848f91ea3bc025c27e76da": [
+      {
+        "category": "exchange",
+        "label": "VyFi",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1z8xj659zlqm2kfa8tufadwv22nqq3py0j84rhsp9cfl8dk4ksyd8pn7amnr48geat0yft0uezfunealzy4ghl0cayp4sen5fsv"
+        }
+      }
+    ],
+    "d31d1f8e727ce3d94d791ea6fb1502ec9283f5d86e54a4da4fde8b25": [
+      {
+        "category": "exchange",
+        "label": "Axo",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1z8f368uwwf7w8k2d0y02d7c4qtkf9ql4mph9ffx6fl0gkf057lx943petj0arglpudu5ackaxywn7pw9d6fmvgy3aplqf22hpa"
+        }
+      }
+    ],
+    "d9143ac63473b17a215d1b7484dfb6ac6b4a0005beb0e26a6ca02c96": [
+      {
+        "category": "exchange",
+        "label": "snek.fun",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1z8v3gwkxx3emz73pt5dhfpxlk6kxkjsqqkltpcn2djsze95ujstczdrz5vsjeuafd74g845yd2utpzhaxn8qlf2n4vzqfhxpxg"
+        }
+      }
+    ],
+    "da5b47aed3955c9132ee087796fa3b58a1ba6173fa31a7bc29e56d4e": [
+      {
+        "category": "exchange",
+        "label": "CSWAP",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1z8d9k3aw6w24eyfjacy809h68dv2rwnpw0arrfau98jk6nhv88awp8sgxk65d6kry0mar3rd0dlkfljz7dv64eu39vfs38yd9p"
+        }
+      }
+    ],
+    "db39df384ce0bb895d1601b1fbb876afbc3ead6bf60a1e94ded9a069": [
+      {
+        "category": "exchange",
+        "label": "Axo",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1z8dnnhecfnsthz2azcqmr7acw6hmc04dd0mq5855mmv6q6txxjtcwkuntjk36ms25yahpmzr6y5u8gdc9h80mxyaxnqq5q67vs"
+        }
+      }
+    ],
+    "dbe7a3d8a1d82990992a38eea1a2efaa68e931e252fc92ca1383809b": [
+      {
+        "category": "exchange",
+        "label": "DexHunter",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1z8d70g7c58vznyye9guwagdza74x36f3uff0eyk2zwpcpx65agex6smle653yuetsnc6cnuxwsr6rjdjpcg8zl6p0m6sygpl8y"
+        }
+      }
+    ],
+    "ddbebc6263726bcc035934b3b71c1fb144a78a1cbbc57499c45b1e89": [
+      {
+        "category": "vesting",
+        "shape": "timestamp_and_owner",
+        "datum_example": "d879821b0000019eefafa1c3581cbbc1005d1057303cfa5e1e47bd8666cc78584262ce119360e9f5f97f",
+        "label": "snek.fun",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY; shape and example from mitos-vesting-decode::snek_fun, whose deadlines are cross-checked against snek.fun's own pools feed",
+        "derived_from": {
+          "address": "addr1w8wma0rzvdexhnqrty6t8dcur7c5ffu2rjau2ayec3d3azg5qp35x"
+        }
+      }
+    ],
+    "dfbb7ee1edcea9d3cf87e2e42ed2ea1071eb8a670ce654f229c8d96c": [
+      {
+        "category": "exchange",
+        "label": "Axo",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1z80mklhpah82n570sl3wgtkjagg8r6u2vuxwv48j98ydjmq6tqhfsg3ghgvxq59qvvnprjpegw9q7wt74r5a2sry6vtsrzppv9"
+        }
+      }
+    ],
+    "e0302560ced2fdcbfcb2602697df970cd0d6a38f94b32703f51c312b": [
+      {
+        "category": "exchange",
+        "label": "SundaeSwap",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1x8srqftqemf0mjlukfszd97ljuxdp44r372txfcr75wrz26rnxqnmtv3hdu2t6chcfhl2zzjh36a87nmd6dwsu3jenqsslnz7e"
+        }
+      }
+    ],
+    "e1317b152faac13426e6a83e06ff88a4d62cce3c1634ab0a5ec13309": [
+      {
+        "category": "exchange",
+        "label": "Minswap",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1z8snz7c4974vzdpxu65ruphl3zjdvtxw8strf2c2tmqnxz2j2c79gy9l76sdg0xwhd7r0c0kna0tycz4y5s6mlenh8pq0xmsha"
+        }
+      }
+    ],
+    "e6c90a5923713af5786963dee0fdffd830ca7e0c86a041d9e5833e91": [
+      {
+        "category": "exchange",
+        "label": "WingRiders",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1w8nvjzjeydcn4atcd93aac8allvrpjn7pjr2qsweukpnayghhwcpj"
+        }
+      }
+    ],
+    "ea07b733d932129c378af627436e7cbc2ef0bf96e0036bb51b3bde6b": [
+      {
+        "category": "exchange",
+        "label": "Minswap",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1z84q0denmyep98ph3tmzwsmw0j7zau9ljmsqx6a4rvaau66j2c79gy9l76sdg0xwhd7r0c0kna0tycz4y5s6mlenh8pq777e2a"
+        }
+      }
+    ],
+    "ed97e0a1394724bb7cb94f20acf627abc253694c92b88bf8fb4b7f6f": [
+      {
+        "category": "exchange",
+        "label": "CSWAP",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1z8ke0c9p89rjfwmuh98jpt8ky74uy5mffjft3zlcld9h7ml3lmln3mwk0y3zsh3gs3dzqlwa9rjzrxawkwm4udw9axhs6fuu6e"
+        }
+      }
+    ],
+    "f002facfd69d51b63e7046c6d40349b0b17c8dd775ee415c66af3ccc": [
+      {
+        "category": "exchange",
+        "label": "Splash",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1x8cq97k066w4rd37wprvd4qrfxctzlyd6a67us2uv6hnen9j764lvrxdayh2ux30fl0ktuh27csgmpevdu89jlxppvrsgzvahe"
+        }
+      }
+    ],
+    "f731111234a2508a3fa55c1897b3e07e5e5892d4115c2336ad277aef": [
+      {
+        "category": "exchange",
+        "label": "Axo",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1z8mnzygjxj39pz3l54wp39anupl9ukyj6sg4cgek45nh4m76x6nl9fz3f82jz7jq4yhpecyjz5huzwgnqts4wgvt6apqa4ds3v"
+        }
+      }
+    ],
+    "fa6a58bbe2d0ff05534431c8e2f0ef2cbdc1602a8456e4b13c8f3077": [
+      {
+        "category": "exchange",
+        "label": "SundaeSwap",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1z8ax5k9mutg07p2ngscu3chsauktmstq92z9de938j8nqa7zcka2k2tsgmuedt4xl2j5awftvqzmmv3vs2yduzqxfcmsyun6n3"
+        }
+      }
+    ],
+    "fcc896deb55dd1befccc6246e886c1f08def3fe673d0009008222684": [
+      {
+        "category": "exchange",
+        "label": "Axo",
+        "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
+        "derived_from": {
+          "address": "addr1z87v39k7k4war0hue33yd6yxc8cgmmelueeaqqyspq3zdp8yranhazuukvkljzzene0nh4ckfqdhtj9zs97eaqcskt3qy8704c"
         }
       }
     ]

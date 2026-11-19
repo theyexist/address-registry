@@ -38,5 +38,8 @@ pub use resolved::{
 pub const IMPORT_FORMAT: u32 = 1;
 
 /// The format of `resolved/` and the behaviour artefacts. Bumped to 2 when a
-/// credential became a list of uses with an optional shape.
-pub const FORMAT: u32 = 2;
+/// credential became a list of uses with an optional shape, to 3 when `label`
+/// and `project` became optional (the compiled table names most contracts and
+/// operates few), and to 4 when the shape names stopped saying `deadline` — the
+/// same layout is a stake date on `$PERP` staking.
+pub const FORMAT: u32 = 4;

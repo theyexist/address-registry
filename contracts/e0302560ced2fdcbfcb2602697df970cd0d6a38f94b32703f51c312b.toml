@@ -1,0 +1,9 @@
+credential = "e0302560ced2fdcbfcb2602697df970cd0d6a38f94b32703f51c312b"
+
+[[use]]
+category = "exchange"
+label = "SundaeSwap"
+source = "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY"
+
+[use.derived_from]
+address = "addr1x8srqftqemf0mjlukfszd97ljuxdp44r372txfcr75wrz26rnxqnmtv3hdu2t6chcfhl2zzjh36a87nmd6dwsu3jenqsslnz7e"

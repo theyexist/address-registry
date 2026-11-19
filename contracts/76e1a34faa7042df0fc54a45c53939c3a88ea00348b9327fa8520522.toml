@@ -1,0 +1,11 @@
+# The PREPROD burn sink, published by us because $burnsnek is mainnet-only and
+# testing a burn flow needs one. Unlike the mainnet sink this is proof: the whole
+# nine-byte script is quoted in the evidence and its credential re-derived.
+credential = "76e1a34faa7042df0fc54a45c53939c3a88ea00348b9327fa8520522"
+
+[[use]]
+category = "burn"
+source = "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY: PREPROD ONLY. Native script, 9 bytes, published by us: `820182820402820501` = all [ invalid_before 2, invalid_hereafter 1 ]. Per the ledger CDDL, tag 4 is `invalid_before` (valid FROM that slot) and tag 5 is `invalid_hereafter` (valid UNTIL that slot), so this demands a transaction whose validity interval both starts at or after slot 2 AND ends at or before slot 1. No interval satisfies both, at any point in the chain's life, so nothing sent here is ever spendable. Unlike the mainnet sink above this is PROOF rather than inference: the whole script is quoted here, and `preprod_burn_sink_is_unsatisfiable` re-derives the credential and the address from those bytes, so a typo in either fails the build rather than silently naming a spendable address."
+
+[use.derived_from]
+address = "addr_test1wpmwrg604fcy9hc0c49yt3fe88p63r4qqdytjvnl4pfq2gse5r9f5"

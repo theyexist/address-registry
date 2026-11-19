@@ -1,0 +1,11 @@
+# The mainnet burn sink $PERP and $Aliens both send supply to. `source` keeps the
+# compiled table's evidence verbatim, including its own caveat: this is strong
+# inference, not proof.
+credential = "c1b35bb893529376effc4083dc0a0ed90a1c07fe09550885b37aa27f"
+
+[[use]]
+category = "burn"
+source = "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY: Header byte 0x71 (type 7): script payment credential, no stake part — spending requires satisfying the script and there is no key that can. The script is Plutus V2, 46 bytes; its entire body is the trace string \"A cobra vai fumar!\" (18 bytes matching the 0x12 length prefix) — an always-fails validator whose whole content is an error message. 46 bytes leaves no room for conditional logic. Consistent with observation: 19,692 UTxOs accumulated, none ever consumed; $PERP alone has sent 133,627,385 (13.36% of supply). Checked 2026-08-29. CAVEAT: inferred from script size + embedded string, not from decompiling the UPLC — strong inference, not yet proof."
+
+[use.derived_from]
+address = "addr1w8qmxkacjdffxah0l3qg8hq2pmvs58q8lcy42zy9kda2ylc6dy5r4"

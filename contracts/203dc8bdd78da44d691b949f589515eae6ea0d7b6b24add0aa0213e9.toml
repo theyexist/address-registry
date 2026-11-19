@@ -1,0 +1,10 @@
+# An airdropper whose operator the compiled table does not name; absence of a
+# label is that "Unknown", not a missing row.
+credential = "203dc8bdd78da44d691b949f589515eae6ea0d7b6b24add0aa0213e9"
+
+[[use]]
+category = "airdropper"
+source = "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY (label \"Unknown\": no operator named)"
+
+[use.derived_from]
+address = "addr1wysrmj9a67x6gntfrw2f7ky4zh4wd6sd0d4jftws4gpp86gw3kf46"

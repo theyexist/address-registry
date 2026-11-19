@@ -1,0 +1,12 @@
+# jpg.store V2/V3 sale escrow. Delegated and undelegated forms are one script;
+# the address below is the undelegated one. The label is the compiled table's
+# own rendering, `"{marketplace} {purpose}"`.
+credential = "c727443d77df6cff95dca383994f4c3024d03ff56b02ecc22b0f3f65"
+
+[[use]]
+category = "marketplace"
+label = "JPG.store Sale"
+source = "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY (JPG.store, Sale, V2)"
+
+[use.derived_from]
+address = "addr1w8rjw3pawl0kelu4mj3c8x20fsczf5pl744s9mxz9v8n7eg0fcr8k"

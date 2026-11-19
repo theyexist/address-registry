@@ -1,0 +1,14 @@
+# CrowdLock, a cnft.tools loyalty lock. Its datum wraps the owner in a
+# one-element list, which is why the plural shape exists: reading it as the
+# singular one takes the list for a bare hash and fails.
+credential = "381cd9b620ce9d7c73dd45cfe207971cc79df79251003116094f6b36"
+
+[[use]]
+category = "vesting"
+shape = "timestamp_and_owners"
+label = "CrowdLock"
+datum_example = "d879821b000001a1a4bf19b181581c373998141ef305075d72dc53c57168fe495d3fb27ab2f94e85410c5b"
+source = "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY; shape and example from a live UTxO in the token-holders fixture"
+
+[use.derived_from]
+address = "addr1zyupekdkyr8f6lrnm4zulcs8juwv080hjfgsqvgkp98kkdhym9auk0rgpz3lurkryvhl55046ak6ex4tlyj6mxxj735syr937w"

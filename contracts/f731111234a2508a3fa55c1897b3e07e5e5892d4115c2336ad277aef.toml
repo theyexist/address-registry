@@ -1,0 +1,9 @@
+credential = "f731111234a2508a3fa55c1897b3e07e5e5892d4115c2336ad277aef"
+
+[[use]]
+category = "exchange"
+label = "Axo"
+source = "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY"
+
+[use.derived_from]
+address = "addr1z8mnzygjxj39pz3l54wp39anupl9ukyj6sg4cgek45nh4m76x6nl9fz3f82jz7jq4yhpecyjz5huzwgnqts4wgvt6apqa4ds3v"

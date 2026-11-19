@@ -1,0 +1,12 @@
+# snek.fun's bonding curve — the same project as its lock above, a different
+# script and a different job. Its reserves are not an AMM's, which is why the
+# category is `exchange` for the curve and `vesting` for the lock.
+credential = "d9143ac63473b17a215d1b7484dfb6ac6b4a0005beb0e26a6ca02c96"
+
+[[use]]
+category = "exchange"
+label = "snek.fun"
+source = "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY"
+
+[use.derived_from]
+address = "addr1z8v3gwkxx3emz73pt5dhfpxlk6kxkjsqqkltpcn2djsze95ujstczdrz5vsjeuafd74g845yd2utpzhaxn8qlf2n4vzqfhxpxg"

@@ -32,7 +32,7 @@ credential = "c7ab6ff0df90974fa01fcd7971336791207c475324f1b288e5808e5f"
 
 [[use]]
 category = "lock"
-shape = "deadline_and_owner"
+shape = "timestamp_and_owner"
 label = "TSURU Lock"
 project = "TSURU"
 source = "token-ledger walk 2026-11-19: datum Constr 0 [Int(ms), Bytes(owner_pkh)]"
@@ -46,8 +46,8 @@ address = "addr1w8r6kmlsm7gfwnaqrlxhjufnv7gjqlz82vj0rv5gukqguhcs9tj6j"
   `wallet`. The first nine are the compiled table's names, so a consumer migrates
   by rename; `lock` and `wallet` are the two it never had.
 - `shape` is optional and says how the datum lays out its arguments:
-  `owner_only`, `deadline_and_owner`, or `deadline_and_owners` for a list. It is
-  absent for anything that holds nothing under a datum — a `wallet`, which is a
+  `owner_only`, `timestamp_and_owner`, or `timestamp_and_owners` for a list. It
+  is absent for anything that holds nothing under a datum — a `wallet`, which is a
   key address an operator uses, or a script whose datum nobody has read yet.
 - `datum_example` is optional and needs a `shape`: a real datum observed at this
   credential, as lowercase hex CBOR. The registry does not decode it, so it cannot
@@ -63,7 +63,7 @@ address = "addr1w8r6kmlsm7gfwnaqrlxhjufnv7gjqlz82vj0rv5gukqguhcs9tj6j"
 - A second `[[use]]` is how an overloaded address is described. The registry
   lists the uses and never picks between them: only on-chain evidence can, at the
   consumer — a datumless UTxO is the wallet use, a datum matching
-  `deadline_and_owner` is the lock use.
+  `timestamp_and_owner` is the lock use.
 - Unknown keys are an error, not a silent drop.
 
 ```sh
@@ -122,9 +122,15 @@ There are three artefacts, because consumers ask different questions:
 
 | you need | fetch | today |
 | --- | --- | --- |
-| a classification | `resolved/behaviour.bin` | 461 B (397 gzipped) |
-| every field as text | `resolved/behaviour.json` | 986 B (507 gzipped) |
-| that, plus who else names them | `resolved/registry.json` | 423 KB (55 KB gzipped) |
+| a classification | `resolved/behaviour.bin` | 14 KB (7.5 KB gzipped) |
+| every field as text | `resolved/behaviour.json` | 25 KB (7.7 KB gzipped) |
+| that, plus who else names them | `resolved/registry.json` | 450 KB (63 KB gzipped) |
+
+The binary's advantage is the **index**, not the byte count: gzipped the two
+behaviour files are within 3% of each other, because the labels and sources are
+the bulk and compress the same way. What the binary buys is addressability — a
+fixed-width record per use, so a reader computes an offset instead of parsing a
+document.
 
 The first two are the curated rows and nothing else. A consumer holding five
 credentials resolves all five from them; it does not pay for 825 imported claims
@@ -213,4 +219,6 @@ ten thousand. Past ~100 KB of index (about 2,800 rows), shard to
 ## Status
 
 The import layer, the authored layer, the resolved artefacts and the charter are
-in place, and the artefacts are published by being committed.
+in place, and the artefacts are published by being committed. The authored layer
+carries **61 uses**, covering every credential the compiled
+`shared-crates/address-registry` table carried before this repository existed.
