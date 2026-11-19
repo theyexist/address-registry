@@ -136,7 +136,7 @@ fn resolve_reproduces_the_artefact_from_the_committed_inputs() {
     // The counts are checked against the artefact rather than against literals:
     // the registry grows, and a number that has to be edited on every port is a
     // number that will one day be edited to the wrong value.
-    let report: ResolveReport = read(&out.join("report.json"));
+    let fresh_report: ResolveReport = read(&out.join("report.json"));
     let uses: usize = committed.authored.values().map(Vec::len).sum();
     let verified = committed
         .authored
@@ -149,17 +149,27 @@ fn resolve_reproduces_the_artefact_from_the_committed_inputs() {
         .keys()
         .filter(|credential| !committed.claims(credential).is_empty())
         .count();
-    assert_eq!(report.counts.authored, uses);
-    assert_eq!(report.counts.authored_credentials, committed.authored.len());
-    assert_eq!(report.counts.authored_with_upstream_claim, with_claim);
+    assert_eq!(fresh_report.counts.authored, uses);
     assert_eq!(
-        report.counts.authored_only,
+        fresh_report.counts.authored_credentials,
+        committed.authored.len()
+    );
+    assert_eq!(fresh_report.counts.authored_with_upstream_claim, with_claim);
+    assert_eq!(
+        fresh_report.counts.authored_only,
         committed.authored.len() - with_claim
     );
-    assert_eq!(report.counts.derived_from_verified, verified);
-    assert_eq!(report.counts.derived_from_attested, uses - verified);
+    assert_eq!(fresh_report.counts.derived_from_verified, verified);
+    assert_eq!(fresh_report.counts.derived_from_attested, uses - verified);
 
-    let staking = report
+    // The committed report is an artefact a reader trusts; it has to be the one
+    // this tree produces, not the one it produced last time.
+    let committed_report: ResolveReport = read(&repo().join("resolved/report.json"));
+    assert_eq!(fresh_report.format, committed_report.format);
+    assert_eq!(fresh_report.counts, committed_report.counts);
+    assert_eq!(fresh_report.authored, committed_report.authored);
+
+    let staking = fresh_report
         .authored
         .iter()
         .find(|row| row.credential == TOOL_STAKING)
@@ -167,7 +177,7 @@ fn resolve_reproduces_the_artefact_from_the_committed_inputs() {
     assert_eq!(staking.category, Category::Staking);
     assert_eq!(staking.derived_from, DerivedFromStatus::Attested);
 
-    let lock = report
+    let lock = fresh_report
         .authored
         .iter()
         .find(|row| row.credential == TOOL_LOCK)

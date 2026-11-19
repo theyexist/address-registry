@@ -67,6 +67,15 @@ address = "addr1w8r6kmlsm7gfwnaqrlxhjufnv7gjqlz82vj0rv5gukqguhcs9tj6j"
 - Unknown keys are an error, not a silent drop.
 
 ```sh
+cargo run -p address-registry -- validate contracts/<credential>.toml
+```
+
+`validate` applies the same rules `resolve` applies — the file name must be the
+credential, an `address` must decode to it, an `attested` must say why — and
+writes nothing. It names every failing file rather than the first, because a
+contributor is fixing files rather than discovering one error per run.
+
+```sh
 cargo run -p address-registry -- resolve
 ```
 
@@ -118,7 +127,13 @@ nix build .#                                  # the package installs
 nix flake check                               # the suite, plus the binary's usage line
 nix develop -c cargo fmt --all --check
 nix develop -c cargo clippy --workspace --all-targets -- -D warnings
+nix run . -- validate                         # every contract file, no writes
 ```
+
+A second CI job runs `validate` over the contract files a pull request changes,
+so a malformed file is reported by name instead of as a failed artefact
+comparison. It reads the rest of `contracts/` too: a new file that repeats a
+credential another file already declares is only wrong in context.
 
 `nix flake check` runs the suite, which **regenerates the artefacts in a
 temporary directory and compares them with the committed ones**. A `contracts/`

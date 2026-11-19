@@ -15,7 +15,10 @@ use std::collections::BTreeMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-pub fn load(dir: &Path) -> Result<BTreeMap<String, Vec<Contract>>> {
+/// The `*.toml` files in `dir`, sorted. The directory listing is the index, so
+/// every reader of the authored layer starts here rather than deciding for itself
+/// what counts as a contract file.
+pub fn files(dir: &Path) -> Result<Vec<PathBuf>> {
     let mut files = Vec::new();
     let entries = fs::read_dir(dir).map_err(|error| Error::at(dir, error))?;
     for entry in entries {
@@ -26,18 +29,36 @@ pub fn load(dir: &Path) -> Result<BTreeMap<String, Vec<Contract>>> {
         }
     }
     files.sort();
+    Ok(files)
+}
 
+/// Parse one file and check it against its own name.
+///
+/// The directory-wide rule — two files for one credential — needs the directory,
+/// so `load` is what enforces it. This is the part a single edited file can be
+/// held to on its own.
+pub fn read(path: &Path) -> Result<ContractFile> {
+    // A contract file is `<credential>.toml`; any other extension would parse and
+    // pass its name check while `load` never looked at it.
+    if path.extension().and_then(|ext| ext.to_str()) != Some("toml") {
+        return Err(Error::at(path, "a contract file is `<credential>.toml`"));
+    }
+    let text = fs::read_to_string(path).map_err(|error| Error::at(path, error))?;
+    let file: ContractFile = toml::from_str(&text).map_err(|error| Error::at(path, error))?;
+    let stem = path
+        .file_stem()
+        .and_then(|stem| stem.to_str())
+        .unwrap_or_default();
+    file.validate(stem)
+        .map_err(|invalid| Error::at(path, invalid))?;
+    Ok(file)
+}
+
+pub fn load(dir: &Path) -> Result<BTreeMap<String, Vec<Contract>>> {
     let mut contracts = BTreeMap::new();
     let mut declared_by: BTreeMap<String, PathBuf> = BTreeMap::new();
-    for path in files {
-        let text = fs::read_to_string(&path).map_err(|error| Error::at(&path, error))?;
-        let file: ContractFile = toml::from_str(&text).map_err(|error| Error::at(&path, error))?;
-        let stem = path
-            .file_stem()
-            .and_then(|stem| stem.to_str())
-            .unwrap_or_default();
-        file.validate(stem)
-            .map_err(|invalid| Error::at(&path, invalid))?;
+    for path in files(dir)? {
+        let file = read(&path)?;
         if let Some(first) = declared_by.get(&file.credential) {
             return Err(Error::at(
                 &path,

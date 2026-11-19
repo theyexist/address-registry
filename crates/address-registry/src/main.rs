@@ -17,6 +17,7 @@ mod contract;
 mod error;
 mod resolve;
 mod upstream;
+mod validate;
 
 use crate::error::{Error, Result};
 use address_registry_schema::{
@@ -39,6 +40,10 @@ usage: address-registry <command>
   resolve  [--imported imported/registry.json] [--contracts contracts] [--out resolved]
            overlay the authored contracts onto the imported claims
 
+  validate [--contracts contracts] [<file>...]
+           check contract files against the schema, and that no two declare one
+           credential; with no files, check every file in the directory
+
 Nothing is fetched and nothing is resolved behind your back: a credential two
 projects claim is recorded as a conflict for a human, never silently picked.";
 
@@ -58,6 +63,10 @@ enum Command {
         imported: PathBuf,
         contracts: PathBuf,
         out: PathBuf,
+    },
+    Validate {
+        contracts: PathBuf,
+        files: Vec<PathBuf>,
     },
 }
 
@@ -84,6 +93,7 @@ fn run() -> Result<()> {
             contracts,
             out,
         } => resolve::run(&imported, &contracts, &out),
+        Command::Validate { contracts, files } => validate::run(&contracts, &files),
     }
 }
 
@@ -239,6 +249,7 @@ fn parse_args(argv: impl IntoIterator<Item = String>) -> Result<Option<Command>>
     match command.as_str() {
         "import" => parse_import(&mut rest),
         "resolve" => parse_resolve(&mut rest),
+        "validate" => parse_validate(&mut rest),
         "--help" | "-h" | "help" => Ok(None),
         other => Err(Error::new(format!("unknown command: {other}\n\n{USAGE}"))),
     }
@@ -284,6 +295,22 @@ fn parse_resolve(rest: &mut impl Iterator<Item = String>) -> Result<Option<Comma
         contracts,
         out,
     }))
+}
+
+fn parse_validate(rest: &mut impl Iterator<Item = String>) -> Result<Option<Command>> {
+    let mut contracts = PathBuf::from("contracts");
+    let mut files = Vec::new();
+    while let Some(argument) = rest.next() {
+        match argument.as_str() {
+            "--contracts" => contracts = PathBuf::from(value(rest, "--contracts")?),
+            "--help" | "-h" => return Ok(None),
+            other if other.starts_with('-') => {
+                return Err(Error::new(format!("unknown argument: {other}")))
+            }
+            path => files.push(PathBuf::from(path)),
+        }
+    }
+    Ok(Some(Command::Validate { contracts, files }))
 }
 
 fn value(rest: &mut impl Iterator<Item = String>, flag: &str) -> Result<String> {

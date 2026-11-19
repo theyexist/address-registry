@@ -80,7 +80,7 @@ impl Behaviour {
     }
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Debug, Deserialize, PartialEq, Serialize)]
 pub struct ResolveReport {
     pub format: u32,
     pub generated_at: String,
@@ -91,7 +91,7 @@ pub struct ResolveReport {
 /// Counts are mixed by design and the names say which unit each is: a credential
 /// may carry several uses, so "authored" and "authored_credentials" are not the
 /// same number.
-#[derive(Deserialize, Serialize)]
+#[derive(Debug, Deserialize, PartialEq, Serialize)]
 pub struct ResolveCounts {
     pub credentials: usize,
     /// Uses, one row per `[[use]]`.
@@ -104,7 +104,7 @@ pub struct ResolveCounts {
     pub derived_from_attested: usize,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Debug, Deserialize, PartialEq, Serialize)]
 pub struct AuthoredRow {
     pub credential: String,
     pub category: Category,

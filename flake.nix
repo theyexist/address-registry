@@ -142,6 +142,7 @@
           cli = pkgs.runCommand "address-registry-cli" { } ''
             ${registry}/bin/address-registry --help | grep -q "usage: address-registry"
             ${registry}/bin/address-registry --help | grep -q "resolve"
+            ${registry}/bin/address-registry --help | grep -q "validate"
             touch $out
           '';
         }
