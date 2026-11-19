@@ -1,0 +1,6 @@
+# The two upstream clones, checked out by hand at a recorded rev.
+vendor/
+
+/target
+.direnv
+.DS_Store

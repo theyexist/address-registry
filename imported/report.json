@@ -1,0 +1,413 @@
+{
+  "format": 1,
+  "generated_at": "2026-11-19T01:23:44.952Z",
+  "sources": {
+    "strica": {
+      "repo": "https://github.com/StricaHQ/cardano-contracts-registry",
+      "rev": "32e488769d66776a91f5f6e9dc0dd6b365b90211",
+      "projects": 38
+    },
+    "eternl": {
+      "repo": "https://github.com/Tastenkunst/eternl-cardano-registry",
+      "rev": "af081fbfdbfc7e9f4ae943359967181d940a9d14",
+      "projects": 117
+    }
+  },
+  "counts": {
+    "credentials": 825,
+    "claims": 873,
+    "claimed_by_both_sources": 48,
+    "conflicts": 25,
+    "strica_contracts_dropped": 0,
+    "eternl_scripts_dropped": 0
+  },
+  "skipped": [],
+  "skipped_truncated": 0,
+  "conflicts": [
+    {
+      "credential": "07eb2fb09d9dd6603870ce6f84c8f8506249152173ddf0c77f1f07ec",
+      "claims": [
+        {
+          "source": "eternl",
+          "project": "SundaeSwap",
+          "contract": "V4 Order"
+        },
+        {
+          "source": "strica",
+          "project": "SundaeSwap",
+          "contract": "V4 Order Contract"
+        }
+      ]
+    },
+    {
+      "credential": "131f26cd99012663aa063d0ef86dc0ac039d1797d5e062768fb12e74",
+      "claims": [
+        {
+          "source": "eternl",
+          "project": "Indigo Protocol",
+          "contract": "Governance (V2)"
+        },
+        {
+          "source": "strica",
+          "project": "Indigo Protocol",
+          "contract": "Governance"
+        }
+      ]
+    },
+    {
+      "credential": "1af84a9e697e1e7b042a0a06f061e88182feb9e9ada950b36a916bd5",
+      "claims": [
+        {
+          "source": "eternl",
+          "project": "Saturn Swap",
+          "contract": "Order"
+        },
+        {
+          "source": "strica",
+          "project": "Saturn Swap",
+          "contract": "Swap Contract"
+        }
+      ]
+    },
+    {
+      "credential": "21c9b7b965646069f9becebf8b4c3cedaf84c19b109eaa5980a14a26",
+      "claims": [
+        {
+          "source": "eternl",
+          "project": "SundaeSwap",
+          "contract": "V4 Pool"
+        },
+        {
+          "source": "strica",
+          "project": "SundaeSwap",
+          "contract": "V4 Pool Contract"
+        }
+      ]
+    },
+    {
+      "credential": "22e212c5278964fba8f90cb8240c1c2926fe4a24758eabc3258b8c9c",
+      "claims": [
+        {
+          "source": "eternl",
+          "project": "Dano Finance",
+          "contract": "BTC Grow Babel Fee"
+        },
+        {
+          "source": "strica",
+          "project": "Dano Finance",
+          "contract": "Btc-grow babel fee"
+        }
+      ]
+    },
+    {
+      "credential": "371738e95ab3f0afba69c6b0896df05d7851a5307a830677b77c2ead",
+      "claims": [
+        {
+          "source": "eternl",
+          "project": "SundaeSwap",
+          "contract": "V4 Settings Mint"
+        },
+        {
+          "source": "strica",
+          "project": "SundaeSwap",
+          "contract": "V4 Settings Mint Policy"
+        }
+      ]
+    },
+    {
+      "credential": "4e1a435f8d55f26068150579c18964e58078082b899e6bb560be7cd5",
+      "claims": [
+        {
+          "source": "eternl",
+          "project": "SundaeSwap",
+          "contract": "V4 Constant Sum Module"
+        },
+        {
+          "source": "strica",
+          "project": "SundaeSwap",
+          "contract": "V4 Constant Sum Swap Module"
+        }
+      ]
+    },
+    {
+      "credential": "511d3a02d3a7850dec3eb97caa7e0d491138284af9303df5d0ddfc2b",
+      "claims": [
+        {
+          "source": "eternl",
+          "project": "Dano Finance",
+          "contract": "BTC Grow Metadata Validation"
+        },
+        {
+          "source": "strica",
+          "project": "Dano Finance",
+          "contract": "Btc-grow metadata validation"
+        }
+      ]
+    },
+    {
+      "credential": "519e4d36b834dcf62dacb8c0c978787435cf5981b59f3dc39c55a7b7",
+      "claims": [
+        {
+          "source": "eternl",
+          "project": "Indigo Protocol",
+          "contract": "Redemption Order Book"
+        },
+        {
+          "source": "strica",
+          "project": "Indigo Protocol",
+          "contract": "Order Book"
+        }
+      ]
+    },
+    {
+      "credential": "534de3c0c26a8db1fdfc34b4efa5039879c4b4b09e6e3ae92881f22f",
+      "claims": [
+        {
+          "source": "eternl",
+          "project": "Dano Finance",
+          "contract": "BTC Grow Bridge Asset"
+        },
+        {
+          "source": "strica",
+          "project": "Dano Finance",
+          "contract": "Btc-grow bridge asset"
+        }
+      ]
+    },
+    {
+      "credential": "6563d77a4da81a91831c68d192a3eeefb0340f1341518aae7ce2d48e",
+      "claims": [
+        {
+          "source": "eternl",
+          "project": "Minswap",
+          "contract": "MIN Staking V2"
+        },
+        {
+          "source": "strica",
+          "project": "Minswap",
+          "contract": "Non-Custodial Contract"
+        }
+      ]
+    },
+    {
+      "credential": "808db58d7d66d348b0cc7d83c202ef1d19534d00bf6c463a531020ad",
+      "claims": [
+        {
+          "source": "eternl",
+          "project": "SundaeSwap",
+          "contract": "V4 Settings"
+        },
+        {
+          "source": "strica",
+          "project": "SundaeSwap",
+          "contract": "V4 Settings Contract"
+        }
+      ]
+    },
+    {
+      "credential": "8110c6ae9c92962f01ce98611656c05ea69aa5a709f4ea89c588bbdb",
+      "claims": [
+        {
+          "source": "eternl",
+          "project": "Indigo Protocol",
+          "contract": "Poll Shard (V2)"
+        },
+        {
+          "source": "strica",
+          "project": "Indigo Protocol",
+          "contract": "Poll Shard"
+        }
+      ]
+    },
+    {
+      "credential": "905ab869961b094f1b8197278cfe15b45cbe49fa8f32c6b014f85a2d",
+      "claims": [
+        {
+          "source": "eternl",
+          "project": "Spectrum Finance",
+          "contract": "Swap Order"
+        },
+        {
+          "source": "strica",
+          "project": "snek.fun",
+          "contract": "Bonding Curve Contract"
+        }
+      ]
+    },
+    {
+      "credential": "a76f0fb801a29f591e9871576508d85b0b5f3c38774f65032f58fdad",
+      "claims": [
+        {
+          "source": "eternl",
+          "project": "Wayup",
+          "contract": "Marketplace"
+        },
+        {
+          "source": "strica",
+          "project": "Wayup",
+          "contract": "Wayup Contract"
+        }
+      ]
+    },
+    {
+      "credential": "ad353a777c817f4d9d6c4324930f5c6128400517ec9dae0461e034cd",
+      "claims": [
+        {
+          "source": "eternl",
+          "project": "FluidTokens",
+          "contract": "Pool (V3)"
+        },
+        {
+          "source": "strica",
+          "project": "Fluid Tokens",
+          "contract": "Pool (V3)"
+        }
+      ]
+    },
+    {
+      "credential": "bd2adb685621e224aae7571cb6bd8f0beb0fdd31875eb3a27feee6c0",
+      "claims": [
+        {
+          "source": "eternl",
+          "project": "Masumi",
+          "contract": "Masumi Payment Contract"
+        },
+        {
+          "source": "strica",
+          "project": "Masumi",
+          "contract": "Payment Contract"
+        }
+      ]
+    },
+    {
+      "credential": "cb684a69e78907a9796b21fc150a758af5f2805e5ed5d5a8ce9f76f1",
+      "claims": [
+        {
+          "source": "eternl",
+          "project": "Spectrum Finance",
+          "contract": "Pool V3"
+        },
+        {
+          "source": "strica",
+          "project": "Splash Protocol",
+          "contract": "Royalty Pool Contract"
+        }
+      ]
+    },
+    {
+      "credential": "d9143ac63473b17a215d1b7484dfb6ac6b4a0005beb0e26a6ca02c96",
+      "claims": [
+        {
+          "source": "eternl",
+          "project": "Splash",
+          "contract": "Instant Order (deployment 2)"
+        },
+        {
+          "source": "strica",
+          "project": "snek.fun",
+          "contract": "Instant Order Contract"
+        }
+      ]
+    },
+    {
+      "credential": "d9d5985e0657933005d6eb953aeadad29aa8c36f17e493e2962584ec",
+      "claims": [
+        {
+          "source": "eternl",
+          "project": "SundaeSwap",
+          "contract": "V4 Pool Mint"
+        },
+        {
+          "source": "strica",
+          "project": "SundaeSwap",
+          "contract": "V4 Pool Mint Policy"
+        }
+      ]
+    },
+    {
+      "credential": "dc9003272dbd7fc5d19ce4f0eb3a92bec2c4ffcbd58c8ce4493888bc",
+      "claims": [
+        {
+          "source": "eternl",
+          "project": "FluidTokens",
+          "contract": "Request (V3)"
+        },
+        {
+          "source": "strica",
+          "project": "Fluid Tokens",
+          "contract": "Request (V3)"
+        }
+      ]
+    },
+    {
+      "credential": "ed97e0a1394724bb7cb94f20acf627abc253694c92b88bf8fb4b7f6f",
+      "claims": [
+        {
+          "source": "eternl",
+          "project": "CSWAP",
+          "contract": "V3 Pool"
+        },
+        {
+          "source": "strica",
+          "project": "CSWAP",
+          "contract": "Pool Contract"
+        }
+      ]
+    },
+    {
+      "credential": "f2a240156e3e051ccdc19642c793f807b3bb8b3fb414e1160dd4f40f",
+      "claims": [
+        {
+          "source": "eternl",
+          "project": "Dano Finance",
+          "contract": "Oracle Contract v2"
+        },
+        {
+          "source": "strica",
+          "project": "Dano Finance",
+          "contract": "Oracle Contract"
+        }
+      ]
+    },
+    {
+      "credential": "f47f6594cab956302f7f1cd81ac4122e9ee128146102497feca1a79f",
+      "claims": [
+        {
+          "source": "eternl",
+          "project": "SundaeSwap",
+          "contract": "V4 Stableswap Module"
+        },
+        {
+          "source": "strica",
+          "project": "SundaeSwap",
+          "contract": "V4 Stableswap Swap Module"
+        }
+      ]
+    },
+    {
+      "credential": "fa991bc2f9c4206e72d713bc3487a72e7901057cabb8d364bebeef8f",
+      "claims": [
+        {
+          "source": "eternl",
+          "project": "Dano Finance",
+          "contract": "CLMM Protocol Config"
+        },
+        {
+          "source": "strica",
+          "project": "Dano Finance",
+          "contract": "Concentrated Config Contract"
+        }
+      ]
+    }
+  ],
+  "conflicts_truncated": 0,
+  "observations": {
+    "eternl_script_index": {
+      "generated_at": "2026-10-01T16:03:33.883Z",
+      "scripts": 2646,
+      "credentials": 1679,
+      "not_in_project_files": 1568,
+      "longer_than_a_credential": 967
+    }
+  }
+}
