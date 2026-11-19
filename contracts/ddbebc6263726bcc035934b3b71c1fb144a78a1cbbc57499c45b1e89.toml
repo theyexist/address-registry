@@ -1,0 +1,13 @@
+# snek.fun's lock. Same family as CrowdLock, but the owner is a bare hash rather
+# than a one-element list — the difference the two shape names carry.
+credential = "ddbebc6263726bcc035934b3b71c1fb144a78a1cbbc57499c45b1e89"
+
+[[use]]
+category = "vesting"
+shape = "timestamp_and_owner"
+label = "snek.fun"
+datum_example = "d879821b0000019eefafa1c3581cbbc1005d1057303cfa5e1e47bd8666cc78584262ce119360e9f5f97f"
+source = "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY; shape and example from mitos-vesting-decode::snek_fun, whose deadlines are cross-checked against snek.fun's own pools feed"
+
+[use.derived_from]
+address = "addr1w8wma0rzvdexhnqrty6t8dcur7c5ffu2rjau2ayec3d3azg5qp35x"

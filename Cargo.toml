@@ -1,10 +1,12 @@
-[package]
-name = "address-registry"
-version = "0.1.0"
-edition = "2021"
-publish = false
-description = "A machine-readable registry of Cardano scripts, keyed by payment credential"
+[workspace]
+resolver = "2"
+members = ["crates/address-registry", "crates/address-registry-schema"]
 
-[dependencies]
-serde = { version = "1", features = ["derive"] }
-serde_json = "1"
+# Two crates, two jobs:
+#
+#   address-registry-schema   pure types for the published files; what a consumer depends on
+#   address-registry          the importer and the resolver; needs the filesystem and toml
+#
+# A virtual manifest, so `cargo run` needs `-p address-registry`, and `cargo test`
+# needs `--workspace` to cover both. That is deliberate: a bare `cargo test` that
+# silently covered one crate would be a narrower run than it looks.

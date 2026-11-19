@@ -1,0 +1,96 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # The authored layer is edited by hand, one file per credential, and the full
+  # suite reports a bad file as a failed artefact comparison. This job reports it
+  # as the file it is, and only for the files the change touches.
+  contracts:
+    name: validate changed contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out
+        uses: actions/checkout@v7
+        with:
+          # The diff needs the base commit; a shallow clone only has the tip.
+          fetch-depth: 0
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      # `validate` reads the whole `contracts/` directory as well as the files
+      # it is handed, so a new file that repeats a credential another file
+      # already declares fails here too.
+      - name: Validate the contract files this change touches
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${BASE_SHA}" ] || ! git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null; then
+            echo "No base commit to diff against; validating every contract file."
+            nix run . -- validate
+            exit 0
+          fi
+
+          changed="$(git diff --name-only --diff-filter=ACMR "${BASE_SHA}" HEAD -- contracts)"
+
+          if [ -z "${changed}" ]; then
+            echo "No contract files changed."
+            exit 0
+          fi
+
+          mapfile -t files <<< "${changed}"
+          echo "Changed contract files:"
+          printf '  %s\n' "${files[@]}"
+          nix run . -- validate "${files[@]}"
+
+  check:
+    name: build, tests, lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out
+        uses: actions/checkout@v7
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      # The package first: it is the build a consumer gets, and the one
+      # `nix flake check` does not build.
+      - name: Build the package
+        run: nix build --no-link -L .#
+
+      # The checks are the test suite and the installed binary's usage line.
+      # The suite regenerates the artefacts in a temporary directory and
+      # compares them with the committed ones, so an edited `contracts/` file
+      # that was not resolved fails here.
+      - name: Run the flake checks
+        run: nix flake check -L
+
+      # Lint runs through the devshell, so CI and a contributor use one
+      # toolchain rather than two that can drift.
+      - name: Formatting
+        run: nix develop -c cargo fmt --all --check
+
+      - name: Clippy
+        run: nix develop -c cargo clippy --workspace --all-targets -- -D warnings

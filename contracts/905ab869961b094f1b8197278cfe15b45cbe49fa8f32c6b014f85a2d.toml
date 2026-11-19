@@ -1,0 +1,9 @@
+credential = "905ab869961b094f1b8197278cfe15b45cbe49fa8f32c6b014f85a2d"
+
+[[use]]
+category = "launchpad"
+label = "snek.fun"
+source = "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY"
+
+[use.derived_from]
+address = "addr1xxg94wrfjcdsjncmsxtj0r87zk69e0jfl28n934sznu95tdj764lvrxdayh2ux30fl0ktuh27csgmpevdu89jlxppvrs2993lw"

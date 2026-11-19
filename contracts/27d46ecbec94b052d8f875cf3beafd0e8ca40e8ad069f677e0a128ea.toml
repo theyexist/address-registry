@@ -1,0 +1,13 @@
+# Wayup's collection-offer contract. The label is the compiled table's own
+# rendering, `"{marketplace} {purpose}"`; there is no label field in its
+# Marketplace variant to copy. No address is registered for it — the credential
+# is attested from the market ledger's venue list.
+credential = "27d46ecbec94b052d8f875cf3beafd0e8ca40e8ad069f677e0a128ea"
+
+[[use]]
+category = "marketplace"
+label = "Wayup Offer"
+source = "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY (Wayup, Offer)"
+
+[use.derived_from]
+attested = "mitos tools/market-ledger/venues.toml — venue.wayup.offer_creds"

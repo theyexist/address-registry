@@ -1,0 +1,11 @@
+# Wayup's sale validator — the one its reference script must be. The label is
+# the compiled table's own rendering, `"{marketplace} {purpose}"`.
+credential = "a76f0fb801a29f591e9871576508d85b0b5f3c38774f65032f58fdad"
+
+[[use]]
+category = "marketplace"
+label = "Wayup Sale"
+source = "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY (Wayup, Sale)"
+
+[use.derived_from]
+address = "addr1zxnk7racqx3f7kg7npc4weggmpdskheu8pm57egr9av0mtvasazx8r5xwqtnfjsfrnat3h6yrycd2hfm9qpg7d0hf50s7x4y79"

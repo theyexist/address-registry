@@ -1,0 +1,16 @@
+# The $PERP staking site. The Int is when a position was staked, not when it
+# unlocks — the same layout as a lock and the opposite meaning, which is why the
+# shape name no longer says "deadline". One deployment per project: cnft.tools
+# runs staking for others too, but this credential holds $PERP alone.
+credential = "05d231799bdec5acab13e670b4107d81a5725814c2de7900d422fdb6"
+
+[[use]]
+category = "staking"
+shape = "timestamp_and_owner"
+label = "cnft.tools"
+project = "Perps"
+datum_example = "d879821b0000019c247836ec581ccce969f5c0a16d5735feb093b883e4656f0dd4eb377dbc5d787391bf"
+source = "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY; shape and example from mitos-vesting-decode::perps_staking, a real position captured 2026-11-10"
+
+[use.derived_from]
+address = "addr1zyzayvten00vtt9tz0n8pdqs0kq62ujcznpdu7gq6s30md5uwrkupakg244k2dedgyzg0r6k0wgyplm2qdq0trqny98qv0xlua"

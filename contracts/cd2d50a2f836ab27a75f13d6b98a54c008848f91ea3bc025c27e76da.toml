@@ -1,0 +1,9 @@
+credential = "cd2d50a2f836ab27a75f13d6b98a54c008848f91ea3bc025c27e76da"
+
+[[use]]
+category = "exchange"
+label = "VyFi"
+source = "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY"
+
+[use.derived_from]
+address = "addr1z8xj659zlqm2kfa8tufadwv22nqq3py0j84rhsp9cfl8dk4ksyd8pn7amnr48geat0yft0uezfunealzy4ghl0cayp4sen5fsv"

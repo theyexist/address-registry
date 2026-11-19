@@ -1,0 +1,15 @@
+# The TOOL lock. Every UTxO's datum names its owner beside a date; the date is
+# after the script was created, so it reads as a deadline rather than a stake
+# date — which is the difference between this row and the $PERP staking site,
+# even though their datums have the same shape.
+credential = "c7ab6ff0df90974fa01fcd7971336791207c475324f1b288e5808e5f"
+
+[[use]]
+category = "lock"
+shape = "timestamp_and_owner"
+label = "TSURU Lock"
+project = "TSURU"
+source = "token-ledger walk 2026-11-19: datum Constr 0 [Int(ms), Bytes(owner_pkh)]"
+
+[use.derived_from]
+address = "addr1w8r6kmlsm7gfwnaqrlxhjufnv7gjqlz82vj0rv5gukqguhcs9tj6j"

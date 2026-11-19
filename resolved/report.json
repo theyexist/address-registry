@@ -1,0 +1,564 @@
+{
+  "format": 4,
+  "generated_at": "2026-11-19T04:24:01.924Z",
+  "counts": {
+    "credentials": 861,
+    "authored": 61,
+    "authored_credentials": 61,
+    "authored_with_upstream_claim": 25,
+    "authored_only": 36,
+    "derived_from_verified": 59,
+    "derived_from_attested": 2
+  },
+  "authored": [
+    {
+      "credential": "0116b17c1f359bf0190cff4abf0ffc1adac8cc05288e0691f206a448",
+      "category": "exchange",
+      "shape": null,
+      "label": "Axo",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "05d231799bdec5acab13e670b4107d81a5725814c2de7900d422fdb6",
+      "category": "staking",
+      "shape": "timestamp_and_owner",
+      "label": "cnft.tools",
+      "project": "Perps",
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "0c98fd7b3590ad664e4589ee484c6ec14eada08ee3f557706a62eab1",
+      "category": "exchange",
+      "shape": null,
+      "label": "Axo",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "158074bbfde02f3905afb423e10474944f01c006213469dbd756a278",
+      "category": "exchange",
+      "shape": null,
+      "label": "VyFi",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "1af84a9e697e1e7b042a0a06f061e88182feb9e9ada950b36a916bd5",
+      "category": "exchange",
+      "shape": null,
+      "label": "SaturnSwap",
+      "project": null,
+      "upstream_claims": 2,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "2025463437ee5d64e89814a66ce7f98cb184a66ae85a2fbbfd750106",
+      "category": "exchange",
+      "shape": null,
+      "label": "DexHunter",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "203dc8bdd78da44d691b949f589515eae6ea0d7b6b24add0aa0213e9",
+      "category": "airdropper",
+      "shape": null,
+      "label": null,
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "24ac187bf06c913e06d4b5f473283be3420e15190a6e070cc1be346b",
+      "category": "launchpad",
+      "shape": null,
+      "label": "LumpFun",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "27d46ecbec94b052d8f875cf3beafd0e8ca40e8ad069f677e0a128ea",
+      "category": "marketplace",
+      "shape": null,
+      "label": "Wayup Offer",
+      "project": null,
+      "upstream_claims": 1,
+      "derived_from": "attested"
+    },
+    {
+      "credential": "2e36ac845a6f847d76acf553ed52c28b1fd1e8cee39ca5ba8c2e91d9",
+      "category": "exchange",
+      "shape": null,
+      "label": "Axo",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "2fbcfa4fa5a53553c644fb2fc4162206b526be60b86b881ffe57241f",
+      "category": "exchange",
+      "shape": null,
+      "label": "Axo",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "381cd9b620ce9d7c73dd45cfe207971cc79df79251003116094f6b36",
+      "category": "vesting",
+      "shape": "timestamp_and_owners",
+      "label": "CrowdLock",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "394ff8e31ad31a21876a22b68b99d187178b6341a0f70686b3fa0649",
+      "category": "exchange",
+      "shape": null,
+      "label": "Axo",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "4020e7fc2de75a0729c3cc3af715b34d98381e0cdbcfa99c950bc3ac",
+      "category": "exchange",
+      "shape": null,
+      "label": "SundaeSwap",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "464eeee89f05aff787d40045af2a40a83fd96c513197d32fbc54ff02",
+      "category": "exchange",
+      "shape": null,
+      "label": "Splash",
+      "project": null,
+      "upstream_claims": 1,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "486fd50580610334b3f59a851aead250627b8c72b2018a24e35918d2",
+      "category": "exchange",
+      "shape": null,
+      "label": "Axo",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "55ff0e63efa0694e8065122c552e80c7b51768b7f20917af25752a7c",
+      "category": "exchange",
+      "shape": null,
+      "label": "Axo",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "5b4c324adfa71a5e305159876a6250714b79833e33d90a0aa177b72a",
+      "category": "airdropper",
+      "shape": null,
+      "label": null,
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "66a6bfe25e7e73c6c27ebbc1d13dd18b74da6eab003762e809a65c8f",
+      "category": "exchange",
+      "shape": null,
+      "label": "Axo",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "6b35255f5a768be1dd664d85529743e8632153b1a24621a7c20c9bea",
+      "category": "exchange",
+      "shape": null,
+      "label": "Axo",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "6de585ce16c7a4a101f55c06327d1501d65d54cba96afb4be66573bd",
+      "category": "exchange",
+      "shape": null,
+      "label": "Axo",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "6ec4acc3fbbd570ada625f24902777cec5d7a349fa0f3c7ba87b0cff",
+      "category": "exchange",
+      "shape": null,
+      "label": "DexHunter",
+      "project": null,
+      "upstream_claims": 1,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "765fb5aeefdcd6a598ee998091c05d37241d4e6b761bd2a5032c2934",
+      "category": "exchange",
+      "shape": null,
+      "label": "Axo",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "76e1a34faa7042df0fc54a45c53939c3a88ea00348b9327fa8520522",
+      "category": "burn",
+      "shape": null,
+      "label": null,
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "86ae9eebd8b97944a45201e4aec1330a72291af2d071644bba015959",
+      "category": "exchange",
+      "shape": null,
+      "label": "WingRiders",
+      "project": null,
+      "upstream_claims": 1,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "8a0cfe6369fd7d7295e684ab2d6e8f62398a3bb53fffbe788ec67033",
+      "category": "launchpad",
+      "shape": null,
+      "label": "Solada",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "8f2fee1e5be61e3d58368a7d10db6eba60543bbe63885d7754a47155",
+      "category": "exchange",
+      "shape": null,
+      "label": "Axo",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "905ab869961b094f1b8197278cfe15b45cbe49fa8f32c6b014f85a2d",
+      "category": "launchpad",
+      "shape": null,
+      "label": "snek.fun",
+      "project": null,
+      "upstream_claims": 2,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "9068a7a3f008803edac87af1619860f2cdcde40c26987325ace138ad",
+      "category": "marketplace",
+      "shape": null,
+      "label": "JPG.store Sale",
+      "project": null,
+      "upstream_claims": 1,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "97f1732964905b3c71d12163968814ac5f3be77abc94830a84d32cf9",
+      "category": "exchange",
+      "shape": null,
+      "label": "DexHunter",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "9dee0659686c3ab807895c929e3284c11222affd710b09be690f924d",
+      "category": "exchange",
+      "shape": null,
+      "label": "Splash",
+      "project": null,
+      "upstream_claims": 1,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "9fd41da27127452544bb441905af003d6bc1ea1220eaa336d622121c",
+      "category": "exchange",
+      "shape": null,
+      "label": "Axo",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "a65ca58a4e9c755fa830173d2a5caed458ac0c73f97db7faae2e7e3b",
+      "category": "exchange",
+      "shape": null,
+      "label": "Minswap",
+      "project": null,
+      "upstream_claims": 1,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "a76f0fb801a29f591e9871576508d85b0b5f3c38774f65032f58fdad",
+      "category": "marketplace",
+      "shape": null,
+      "label": "Wayup Sale",
+      "project": null,
+      "upstream_claims": 2,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "af97793b8702f381976cec83e303e9ce17781458c73c4bb16fe02b83",
+      "category": "exchange",
+      "shape": null,
+      "label": "WingRiders",
+      "project": null,
+      "upstream_claims": 1,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "b0ebdd68bd00f3a633c5097fe0243d69fb27abacd7f6959bec63c4c4",
+      "category": "staking",
+      "shape": "owner_only",
+      "label": "TSURU Staking",
+      "project": "TSURU",
+      "upstream_claims": 0,
+      "derived_from": "attested"
+    },
+    {
+      "credential": "c134d839a64a5dfb9b155869ef3f34280751a622f69958baa8ffd29c",
+      "category": "exchange",
+      "shape": null,
+      "label": "WingRiders",
+      "project": null,
+      "upstream_claims": 1,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "c1b35bb893529376effc4083dc0a0ed90a1c07fe09550885b37aa27f",
+      "category": "burn",
+      "shape": null,
+      "label": null,
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "c2c756eb9b1c8ac5d376b6ae7f474931bdecf40279b73ad4de57d0e7",
+      "category": "exchange",
+      "shape": null,
+      "label": "Axo",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "c3e28c36c3447315ba5a56f33da6a6ddc1770a876a8d9f0cb3a97c4c",
+      "category": "exchange",
+      "shape": null,
+      "label": "Minswap",
+      "project": null,
+      "upstream_claims": 1,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "c727443d77df6cff95dca383994f4c3024d03ff56b02ecc22b0f3f65",
+      "category": "marketplace",
+      "shape": null,
+      "label": "JPG.store Sale",
+      "project": null,
+      "upstream_claims": 1,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "c7ab6ff0df90974fa01fcd7971336791207c475324f1b288e5808e5f",
+      "category": "lock",
+      "shape": "timestamp_and_owner",
+      "label": "TSURU Lock",
+      "project": "TSURU",
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "c8b1252870525ab48a7d90ef29132f252b8391db63565d08cceddb66",
+      "category": "exchange",
+      "shape": null,
+      "label": "Axo",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "cb684a69e78907a9796b21fc150a758af5f2805e5ed5d5a8ce9f76f1",
+      "category": "exchange",
+      "shape": null,
+      "label": "Splash",
+      "project": null,
+      "upstream_claims": 2,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "cd2d50a2f836ab27a75f13d6b98a54c008848f91ea3bc025c27e76da",
+      "category": "exchange",
+      "shape": null,
+      "label": "VyFi",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "d31d1f8e727ce3d94d791ea6fb1502ec9283f5d86e54a4da4fde8b25",
+      "category": "exchange",
+      "shape": null,
+      "label": "Axo",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "d9143ac63473b17a215d1b7484dfb6ac6b4a0005beb0e26a6ca02c96",
+      "category": "exchange",
+      "shape": null,
+      "label": "snek.fun",
+      "project": null,
+      "upstream_claims": 2,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "da5b47aed3955c9132ee087796fa3b58a1ba6173fa31a7bc29e56d4e",
+      "category": "exchange",
+      "shape": null,
+      "label": "CSWAP",
+      "project": null,
+      "upstream_claims": 1,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "db39df384ce0bb895d1601b1fbb876afbc3ead6bf60a1e94ded9a069",
+      "category": "exchange",
+      "shape": null,
+      "label": "Axo",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "dbe7a3d8a1d82990992a38eea1a2efaa68e931e252fc92ca1383809b",
+      "category": "exchange",
+      "shape": null,
+      "label": "DexHunter",
+      "project": null,
+      "upstream_claims": 1,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "ddbebc6263726bcc035934b3b71c1fb144a78a1cbbc57499c45b1e89",
+      "category": "vesting",
+      "shape": "timestamp_and_owner",
+      "label": "snek.fun",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "dfbb7ee1edcea9d3cf87e2e42ed2ea1071eb8a670ce654f229c8d96c",
+      "category": "exchange",
+      "shape": null,
+      "label": "Axo",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "e0302560ced2fdcbfcb2602697df970cd0d6a38f94b32703f51c312b",
+      "category": "exchange",
+      "shape": null,
+      "label": "SundaeSwap",
+      "project": null,
+      "upstream_claims": 1,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "e1317b152faac13426e6a83e06ff88a4d62cce3c1634ab0a5ec13309",
+      "category": "exchange",
+      "shape": null,
+      "label": "Minswap",
+      "project": null,
+      "upstream_claims": 1,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "e6c90a5923713af5786963dee0fdffd830ca7e0c86a041d9e5833e91",
+      "category": "exchange",
+      "shape": null,
+      "label": "WingRiders",
+      "project": null,
+      "upstream_claims": 1,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "ea07b733d932129c378af627436e7cbc2ef0bf96e0036bb51b3bde6b",
+      "category": "exchange",
+      "shape": null,
+      "label": "Minswap",
+      "project": null,
+      "upstream_claims": 1,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "ed97e0a1394724bb7cb94f20acf627abc253694c92b88bf8fb4b7f6f",
+      "category": "exchange",
+      "shape": null,
+      "label": "CSWAP",
+      "project": null,
+      "upstream_claims": 2,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "f002facfd69d51b63e7046c6d40349b0b17c8dd775ee415c66af3ccc",
+      "category": "exchange",
+      "shape": null,
+      "label": "Splash",
+      "project": null,
+      "upstream_claims": 1,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "f731111234a2508a3fa55c1897b3e07e5e5892d4115c2336ad277aef",
+      "category": "exchange",
+      "shape": null,
+      "label": "Axo",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "fa6a58bbe2d0ff05534431c8e2f0ef2cbdc1602a8456e4b13c8f3077",
+      "category": "exchange",
+      "shape": null,
+      "label": "SundaeSwap",
+      "project": null,
+      "upstream_claims": 1,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "fcc896deb55dd1befccc6246e886c1f08def3fe673d0009008222684",
+      "category": "exchange",
+      "shape": null,
+      "label": "Axo",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    }
+  ]
+}

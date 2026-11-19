@@ -1,0 +1,11 @@
+# jpg.store V1 sale escrow. The label is the compiled table's own rendering,
+# `"{marketplace} {purpose}"`.
+credential = "9068a7a3f008803edac87af1619860f2cdcde40c26987325ace138ad"
+
+[[use]]
+category = "marketplace"
+label = "JPG.store Sale"
+source = "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY (JPG.store, Sale, V1)"
+
+[use.derived_from]
+address = "addr1zxgx3far7qygq0k6epa0zcvcvrevmn0ypsnfsue94nsn3tvpw288a4x0xf8pxgcntelxmyclq83s0ykeehchz2wtspks905plm"

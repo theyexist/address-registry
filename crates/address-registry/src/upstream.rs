@@ -6,9 +6,10 @@
 //! `registry/scripts/script-index.json` is **not** a source — it is measured and
 //! reported as drift, never imported (see `index_observation`).
 
-use crate::claim::{credential, Audit, Claim, EternlClaim, Source, StricaClaim};
 use crate::error::{Error, Result};
-use crate::output::{IndexObservation, Skipped};
+use address_registry_schema::{
+    credential, Audit, Claim, EternlClaim, IndexObservation, Skipped, Source, StricaClaim,
+};
 use serde::de::{DeserializeOwned, IgnoredAny};
 use serde::Deserialize;
 use std::collections::{BTreeMap, BTreeSet};

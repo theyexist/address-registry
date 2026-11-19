@@ -1,0 +1,9 @@
+credential = "e6c90a5923713af5786963dee0fdffd830ca7e0c86a041d9e5833e91"
+
+[[use]]
+category = "exchange"
+label = "WingRiders"
+source = "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY"
+
+[use.derived_from]
+address = "addr1w8nvjzjeydcn4atcd93aac8allvrpjn7pjr2qsweukpnayghhwcpj"

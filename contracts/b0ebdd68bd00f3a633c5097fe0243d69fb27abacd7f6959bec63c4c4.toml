@@ -1,0 +1,18 @@
+# The TOOL staking site. One position per UTxO, every datum naming only its
+# owner and carrying no date at all — so there is nothing here to read as a
+# deadline. At the 2026-11-19 walk it held 44.2% of supply, the largest single
+# holder of this policy, which is why the holder map's numbers turn on it.
+credential = "b0ebdd68bd00f3a633c5097fe0243d69fb27abacd7f6959bec63c4c4"
+
+[[use]]
+category = "staking"
+shape = "owner_only"
+label = "TSURU Staking"
+project = "TSURU"
+source = "token-ledger walk 2026-11-19: datum Constr 0 [Bytes(owner_pkh)] and no deadline"
+
+# No address registered. The site's UTxOs sit at base addresses whose stake part
+# is the site's own key, and the credential alone does not name one — so this
+# row cannot be re-derived here, and says so rather than looking checked.
+[use.derived_from]
+attested = "no address registered: the stake part of a base address is not determined by its payment credential"

@@ -1,0 +1,9 @@
+credential = "24ac187bf06c913e06d4b5f473283be3420e15190a6e070cc1be346b"
+
+[[use]]
+category = "launchpad"
+label = "LumpFun"
+source = "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY"
+
+[use.derived_from]
+address = "addr1wyj2cxrm7pkfz0sx6j6lgueg8035yrs4ry9xupcvcxlrg6cywmqny"

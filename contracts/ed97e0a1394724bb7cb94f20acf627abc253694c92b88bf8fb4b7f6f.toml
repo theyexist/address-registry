@@ -1,0 +1,9 @@
+credential = "ed97e0a1394724bb7cb94f20acf627abc253694c92b88bf8fb4b7f6f"
+
+[[use]]
+category = "exchange"
+label = "CSWAP"
+source = "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY"
+
+[use.derived_from]
+address = "addr1z8ke0c9p89rjfwmuh98jpt8ky74uy5mffjft3zlcld9h7ml3lmln3mwk0y3zsh3gs3dzqlwa9rjzrxawkwm4udw9axhs6fuu6e"

@@ -1,0 +1,9 @@
+credential = "1af84a9e697e1e7b042a0a06f061e88182feb9e9ada950b36a916bd5"
+
+[[use]]
+category = "exchange"
+label = "SaturnSwap"
+source = "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY"
+
+[use.derived_from]
+address = "addr1zyd0sj57d9lpu7cy9g9qdurpazqc9l4eaxk6j59nd2gkh4gdwqualaz4tsjecupk566prptjpge3kgzjg4nrsmhceehs894qvc"
