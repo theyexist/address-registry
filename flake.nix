@@ -132,10 +132,12 @@
             installPhase = "touch $out";
           };
 
-          # The binary answers its own usage line. Cheap, and it is the one thing a unit
-          # test cannot cover: that the installed executable is the importer.
+          # The binary answers its own usage line, and names both commands. Cheap,
+          # and it is the one thing a unit test cannot cover: that the installed
+          # executable is the importer.
           cli = pkgs.runCommand "address-registry-cli" { } ''
-            ${registry}/bin/address-registry --help | grep -q "address-registry import"
+            ${registry}/bin/address-registry --help | grep -q "usage: address-registry"
+            ${registry}/bin/address-registry --help | grep -q "resolve"
             touch $out
           '';
         }

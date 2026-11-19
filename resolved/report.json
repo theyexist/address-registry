@@ -1,0 +1,32 @@
+{
+  "format": 1,
+  "generated_at": "2026-11-19T01:42:17.808Z",
+  "counts": {
+    "credentials": 827,
+    "authored": 2,
+    "authored_with_upstream_claim": 0,
+    "authored_only": 2,
+    "derived_from_verified": 1,
+    "derived_from_attested": 1
+  },
+  "authored": [
+    {
+      "credential": "b0ebdd68bd00f3a633c5097fe0243d69fb27abacd7f6959bec63c4c4",
+      "kind": "staking",
+      "shape": "owner_only",
+      "label": "TSURU Staking",
+      "project": "TSURU",
+      "upstream_claims": 0,
+      "derived_from": "attested"
+    },
+    {
+      "credential": "c7ab6ff0df90974fa01fcd7971336791207c475324f1b288e5808e5f",
+      "kind": "lock",
+      "shape": "deadline_and_owner",
+      "label": "TSURU Lock",
+      "project": "TSURU",
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    }
+  ]
+}

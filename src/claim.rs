@@ -44,7 +44,7 @@ impl Serialize for Audit {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, serde::Deserialize)]
 pub struct StricaClaim {
     pub project: String,
     pub label_prefix: String,
@@ -59,11 +59,12 @@ pub struct StricaClaim {
     pub audits: Vec<Audit>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, serde::Deserialize)]
 pub struct EternlClaim {
     pub project: String,
     pub contract: Option<String>,
     pub purpose: Option<String>,
+    #[serde(rename = "type")]
     pub script_type: Option<String>,
     pub plutus_version: Option<i64>,
     pub category: Option<String>,
@@ -118,6 +119,26 @@ impl Ord for Claim {
 impl PartialOrd for Claim {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
+    }
+}
+
+/// Reading back what this tool writes. The tag is the `source` field, so the two
+/// upstream shapes stay two variants on the way in as well as out.
+#[derive(serde::Deserialize)]
+#[serde(tag = "source", rename_all = "lowercase")]
+enum ClaimWire {
+    Strica(StricaClaim),
+    Eternl(EternlClaim),
+}
+
+impl<'de> serde::Deserialize<'de> for Claim {
+    fn deserialize<D: serde::Deserializer<'de>>(
+        deserializer: D,
+    ) -> std::result::Result<Self, D::Error> {
+        Ok(match ClaimWire::deserialize(deserializer)? {
+            ClaimWire::Strica(claim) => Claim::Strica(claim),
+            ClaimWire::Eternl(claim) => Claim::Eternl(claim),
+        })
     }
 }
 

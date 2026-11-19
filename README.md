@@ -18,6 +18,46 @@ The authored layer carries the **behaviour**: what the script is, how a datum
 names its owner, and the provenance for that claim. It overlays the imported
 claims; it does not replace them.
 
+## Authored
+
+A contract is one file, `contracts/<credential>.toml`, named after the
+credential it describes:
+
+```toml
+credential = "c7ab6ff0df90974fa01fcd7971336791207c475324f1b288e5808e5f"
+kind = "lock"
+shape = "deadline_and_owner"
+label = "TSURU Lock"
+project = "TSURU"
+source = "token-ledger walk 2026-11-19: datum Constr 0 [Int(ms), Bytes(owner_pkh)]"
+
+[derived_from]
+address = "addr1w8r6kmlsm7gfwnaqrlxhjufnv7gjqlz82vj0rv5gukqguhcs9tj6j"
+```
+
+- `kind` is what the script is (`lock`, `staking`); `shape` is how the datum
+  lays out its arguments (`owner_only`, `deadline_and_owner`). They are separate
+  because the same shape can carry a deadline or a stake date, and only the
+  `kind` says which.
+- `source` is required and must not be empty. A behaviour with no provenance is
+  a fabrication with a filename.
+- `derived_from` is either an `address` whose payment credential must decode to
+  `credential`, or an `attested` reason why no address is registered. The first
+  is decoded and compared when the file loads — a mistyped hex character fails
+  the build rather than naming an address that exists. The second is counted in
+  the report, so an unverifiable row never looks like a checked one.
+- Unknown keys are an error, not a silent drop.
+
+```sh
+cargo run -- resolve
+```
+
+`resolve` reads `imported/registry.json` and `contracts/`, and writes
+`resolved/registry.json` — the authored rows plus the union of every credential,
+with the imported claims beside them. A credential with an authored row and no
+upstream claim appears with an empty claim list; that gap is the reason the
+registry exists.
+
 ## Import
 
 Both upstreams are read from local clones, never fetched by the tool, so an
@@ -53,6 +93,6 @@ The tool writes:
 
 ## Status
 
-The import layer is the first piece. The authored layer and the published
-artefact (`registry-vN.bin` + manifest, digest-pinned) follow, and the charter
-records the governance and licence.
+The import layer and the authored layer are in place. The published artefact
+(`registry-vN.bin` + manifest, digest-pinned) follows, and the charter records
+the governance and licence.

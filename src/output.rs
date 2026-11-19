@@ -5,7 +5,7 @@
 //! index is sorted by construction.
 
 use crate::claim::{Claim, Source};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
 #[derive(Serialize)]
@@ -16,15 +16,15 @@ pub struct Registry {
     pub credentials: BTreeMap<String, Vec<Claim>>,
 }
 
-#[derive(Clone, Serialize)]
+#[derive(Clone, Deserialize, Serialize)]
 pub struct Sources {
     pub strica: SourceRef,
     pub eternl: SourceRef,
 }
 
-#[derive(Clone, Serialize)]
+#[derive(Clone, Deserialize, Serialize)]
 pub struct SourceRef {
-    pub repo: &'static str,
+    pub repo: String,
     pub rev: Option<String>,
     pub projects: usize,
 }
