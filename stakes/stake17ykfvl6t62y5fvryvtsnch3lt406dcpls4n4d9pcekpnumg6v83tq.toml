@@ -1,0 +1,7 @@
+# JPG.store — SCRIPT stake credential 2c967f4b…833e6d, shared by the V1 offer
+# escrow (addr1xxgx3far…) and the V2 sale escrow (addr1x8rjw3paw…). Fixed across
+# both, so it is the venue's own credential and not a seller's.
+stake = "stake17ykfvl6t62y5fvryvtsnch3lt406dcpls4n4d9pcekpnumg6v83tq"
+label = "JPG.store"
+kind = "marketplace"
+source = "delegation part of the registered JPG.store escrow addresses addr1xxgx3far… (offer, V1) and addr1x8rjw3paw… (sale, V2); both are addr1x (script payment + script stake) and carry the identical script credential 2c967f4bd28944b06462e13c5e3f5d5fa6e03f8567569438cd833e6d"

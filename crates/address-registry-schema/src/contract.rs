@@ -40,6 +40,17 @@ pub enum Category {
     Wallet,
 }
 
+/// What a marketplace contract is for. Typed rather than left in the label,
+/// because a consumer selects behaviour by it: `fold-probe` reads offers and must
+/// not read a sale escrow as one, and the two are otherwise the same category.
+#[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "lowercase")]
+pub enum MarketplacePurpose {
+    Offer,
+    Sale,
+    Fee,
+}
+
 /// How a datum lays out its arguments.
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "snake_case")]
@@ -70,6 +81,15 @@ pub enum DerivedFrom {
 #[serde(deny_unknown_fields)]
 pub struct Contract {
     pub category: Category,
+    /// For a marketplace, what the contract is for. Absent for every other
+    /// category, and refused there: a purpose is a marketplace's fact.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub purpose: Option<MarketplacePurpose>,
+    /// For a marketplace, WHICH venue, as a machine key (`jpg.store`, `wayup`).
+    /// The label is prose and may say anything; this is what a consumer matches
+    /// to pick a decoder, and it is refused outside a marketplace use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub market: Option<String>,
     /// Absent for anything that holds nothing under a datum — a wallet, and a
     /// script whose datum this registry has not been told how to read.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -91,6 +111,11 @@ pub struct Contract {
     pub project: Option<String>,
     pub source: String,
     pub derived_from: DerivedFrom,
+    /// Further addresses this use is registered at — one script under another
+    /// delegation form — beyond the one `derived_from` records. Empty for the
+    /// common case.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub also_at: Vec<String>,
 }
 
 /// One credential file: `contracts/<credential>.toml`.
@@ -136,6 +161,25 @@ impl Contract {
                 return Err(Invalid::Empty(field));
             }
         }
+        if self.purpose.is_some() && self.category != Category::Marketplace {
+            return Err(Invalid::PurposeWithoutMarketplace);
+        }
+        if let Some(market) = &self.market {
+            if self.category != Category::Marketplace {
+                return Err(Invalid::MarketWithoutMarketplace);
+            }
+            // A key, not prose: lowercase, and nothing a URL or a shell would
+            // have to quote.
+            let is_key = !market.is_empty()
+                && market.bytes().all(|byte| {
+                    byte.is_ascii_lowercase()
+                        || byte.is_ascii_digit()
+                        || matches!(byte, b'.' | b'-')
+                });
+            if !is_key {
+                return Err(Invalid::MarketNotAKey(market.clone()));
+            }
+        }
         if self.category == Category::Wallet && self.shape.is_some() {
             return Err(Invalid::WalletWithShape);
         }
@@ -161,14 +205,47 @@ impl Contract {
                 if payment.hex() != credential {
                     return Err(Invalid::AddressIsAnotherCredential(payment.hex()));
                 }
+                let mut seen =
+                    vec![crate::bech32::payload(value).ok_or(Invalid::AddressNotBech32)?];
+                for form in &self.also_at {
+                    let payment = address::payment(form).map_err(|error| match error {
+                        AddressError::NotBech32 => Invalid::AddressNotBech32,
+                        other => Invalid::Address(form.clone(), other.to_string()),
+                    })?;
+                    if payment.hex() != credential {
+                        return Err(Invalid::AddressIsAnotherCredential(payment.hex()));
+                    }
+                    // Duplicates are compared as BYTES: every form here shares the
+                    // credential, so the credential cannot tell two forms apart.
+                    let payload = crate::bech32::payload(form).ok_or(Invalid::AddressNotBech32)?;
+                    if seen.contains(&payload) {
+                        return Err(Invalid::AddressRepeated(form.clone()));
+                    }
+                    seen.push(payload);
+                }
             }
             DerivedFrom::Attested(reason) => {
+                if !self.also_at.is_empty() {
+                    return Err(Invalid::AlsoWithoutAddress);
+                }
                 if reason.trim().is_empty() {
                     return Err(Invalid::EmptyAttestation);
                 }
             }
         }
         Ok(())
+    }
+
+    /// Every address this use is registered at: the claim's own, then any other
+    /// delegation form. Empty for an attested use.
+    pub fn addresses(&self) -> impl Iterator<Item = &str> {
+        let primary = match &self.derived_from {
+            DerivedFrom::Address(address) => Some(address.as_str()),
+            DerivedFrom::Attested(_) => None,
+        };
+        primary
+            .into_iter()
+            .chain(self.also_at.iter().map(String::as_str))
     }
 }
 
@@ -180,6 +257,9 @@ pub enum Invalid {
     Filename(String),
     NoUses,
     Empty(&'static str),
+    PurposeWithoutMarketplace,
+    MarketWithoutMarketplace,
+    MarketNotAKey(String),
     WalletWithShape,
     ExampleWithoutShape,
     ExampleNotHex,
@@ -187,6 +267,8 @@ pub enum Invalid {
     /// A bech32 address that is not a payment address, and why.
     Address(String, String),
     AddressIsAnotherCredential(String),
+    AddressRepeated(String),
+    AlsoWithoutAddress,
     EmptyAttestation,
 }
 
@@ -203,6 +285,16 @@ impl fmt::Display for Invalid {
             }
             Invalid::NoUses => f.write_str("a credential file needs at least one [[use]]"),
             Invalid::Empty(field) => write!(f, "`{field}` is empty"),
+            Invalid::PurposeWithoutMarketplace => {
+                f.write_str("`purpose` belongs to a `marketplace` use and nothing else")
+            }
+            Invalid::MarketWithoutMarketplace => {
+                f.write_str("`market` belongs to a `marketplace` use and nothing else")
+            }
+            Invalid::MarketNotAKey(value) => write!(
+                f,
+                "`{value}` is not a market key: lowercase letters, digits, `.` and `-`"
+            ),
             Invalid::WalletWithShape => {
                 f.write_str("a wallet holds nothing under a datum, so it has no `shape`")
             }
@@ -220,6 +312,12 @@ impl fmt::Display for Invalid {
                 f,
                 "derived_from.address decodes to {found}, which is not this credential"
             ),
+            Invalid::AddressRepeated(value) => {
+                write!(f, "derived_from lists `{value}` twice")
+            }
+            Invalid::AlsoWithoutAddress => {
+                f.write_str("`also_at` needs a `derived_from.address` to be another form of")
+            }
             Invalid::EmptyAttestation => {
                 write!(
                     f,
@@ -243,13 +341,20 @@ mod tests {
     fn use_of(derived_from: DerivedFrom) -> Contract {
         Contract {
             category: Category::Lock,
+            purpose: None,
+            market: None,
             shape: Some(Shape::TimestampAndOwner),
             datum_example: None,
             label: Some("TSURU Lock".to_string()),
             project: Some("TSURU".to_string()),
             source: "x".to_string(),
             derived_from,
+            also_at: Vec::new(),
         }
+    }
+
+    fn at(address: &str) -> DerivedFrom {
+        DerivedFrom::Address(address.to_string())
     }
 
     fn file(uses: Vec<Contract>) -> ContractFile {
@@ -261,8 +366,94 @@ mod tests {
 
     #[test]
     fn a_matching_address_validates() {
-        let file = file(vec![use_of(DerivedFrom::Address(ADDRESS.to_string()))]);
+        let file = file(vec![use_of(at(ADDRESS))]);
         assert_eq!(file.validate(CREDENTIAL), Ok(()));
+    }
+
+    #[test]
+    fn another_delegation_form_of_the_same_script_validates() {
+        // jpg.store's V1 escrow: one script, an addr1z sale form and an addr1x
+        // offer form, both deriving the same payment credential.
+        const JPG: &str = "9068a7a3f008803edac87af1619860f2cdcde40c26987325ace138ad";
+        const SALE: &str = "addr1zxgx3far7qygq0k6epa0zcvcvrevmn0ypsnfsue94nsn3tvpw288a4x0xf8pxgcntelxmyclq83s0ykeehchz2wtspks905plm";
+        const OFFER: &str = "addr1xxgx3far7qygq0k6epa0zcvcvrevmn0ypsnfsue94nsn3tfvjel5h55fgjcxgchp830r7h2l5msrlpt8262r3nvr8eks2utwdd";
+        let mut contract = use_of(at(SALE));
+        contract.category = Category::Marketplace;
+        contract.purpose = Some(MarketplacePurpose::Offer);
+        contract.also_at = vec![OFFER.to_string()];
+        assert_eq!(contract.validate(JPG), Ok(()));
+        assert_eq!(contract.addresses().count(), 2);
+    }
+
+    #[test]
+    fn an_also_at_address_must_derive_the_same_credential() {
+        const OTHER: &str = "381cd9b620ce9d7c73dd45cfe207971cc79df79251003116094f6b36";
+        let mut contract = use_of(at(ADDRESS));
+        contract.also_at = vec![
+            "addr1zyupekdkyr8f6lrnm4zulcs8juwv080hjfgsqvgkp98kkdhym9auk0rgpz3lurkryvhl55046ak6ex4tlyj6mxxj735syr937w"
+                .to_string(),
+        ];
+        assert_eq!(
+            contract.validate(CREDENTIAL),
+            Err(Invalid::AddressIsAnotherCredential(OTHER.to_string()))
+        );
+
+        contract.also_at = vec![ADDRESS.to_string()];
+        assert_eq!(
+            contract.validate(CREDENTIAL),
+            Err(Invalid::AddressRepeated(ADDRESS.to_string()))
+        );
+
+        let mut attested = use_of(DerivedFrom::Attested("no address".to_string()));
+        attested.also_at = vec![ADDRESS.to_string()];
+        assert_eq!(
+            attested.validate(CREDENTIAL),
+            Err(Invalid::AlsoWithoutAddress)
+        );
+    }
+
+    #[test]
+    fn a_use_names_every_address_it_is_registered_at() {
+        let contract = use_of(at(ADDRESS));
+        assert_eq!(contract.addresses().collect::<Vec<_>>(), vec![ADDRESS]);
+
+        let attested = use_of(DerivedFrom::Attested("no address".to_string()));
+        assert_eq!(attested.addresses().count(), 0);
+    }
+
+    #[test]
+    fn a_purpose_belongs_to_a_marketplace_and_nowhere_else() {
+        let mut contract = use_of(DerivedFrom::Attested("no address".to_string()));
+        contract.purpose = Some(MarketplacePurpose::Offer);
+        assert_eq!(
+            contract.validate(CREDENTIAL),
+            Err(Invalid::PurposeWithoutMarketplace)
+        );
+
+        contract.category = Category::Marketplace;
+        assert_eq!(contract.validate(CREDENTIAL), Ok(()));
+    }
+
+    #[test]
+    fn a_market_key_is_machine_shaped_and_marketplace_only() {
+        let mut contract = use_of(DerivedFrom::Attested("no address".to_string()));
+        contract.market = Some("jpg.store".to_string());
+        assert_eq!(
+            contract.validate(CREDENTIAL),
+            Err(Invalid::MarketWithoutMarketplace)
+        );
+
+        contract.category = Category::Marketplace;
+        assert_eq!(contract.validate(CREDENTIAL), Ok(()));
+
+        for bad in ["JPG.store", "jpg store", "", "way_up"] {
+            contract.market = Some(bad.to_string());
+            assert_eq!(
+                contract.validate(CREDENTIAL),
+                Err(Invalid::MarketNotAKey(bad.to_string())),
+                "{bad:?} should not be a key"
+            );
+        }
     }
 
     #[test]
@@ -316,9 +507,8 @@ mod tests {
     #[test]
     fn an_address_for_another_credential_is_named() {
         let other = "381cd9b620ce9d7c73dd45cfe207971cc79df79251003116094f6b36";
-        let file = file(vec![use_of(DerivedFrom::Address(
-            "addr1zyupekdkyr8f6lrnm4zulcs8juwv080hjfgsqvgkp98kkdhym9auk0rgpz3lurkryvhl55046ak6ex4tlyj6mxxj735syr937w"
-                .to_string(),
+        let file = file(vec![use_of(at(
+            "addr1zyupekdkyr8f6lrnm4zulcs8juwv080hjfgsqvgkp98kkdhym9auk0rgpz3lurkryvhl55046ak6ex4tlyj6mxxj735syr937w",
         ))]);
         assert_eq!(
             file.validate(CREDENTIAL),
@@ -328,7 +518,7 @@ mod tests {
 
     #[test]
     fn a_reward_address_is_not_a_derived_from() {
-        let file = file(vec![use_of(DerivedFrom::Address(STAKE.to_string()))]);
+        let file = file(vec![use_of(at(STAKE))]);
         assert!(matches!(
             file.validate(CREDENTIAL),
             Err(Invalid::Address(_, _))
@@ -337,8 +527,8 @@ mod tests {
 
     #[test]
     fn a_corrupted_address_is_not_bech32() {
-        let file = file(vec![use_of(DerivedFrom::Address(
-            "addr1w8r6kmlsm7gfwnaqrlxhjufnv7gjqlz82vj0rv5gukqguhcs9tj6k".to_string(),
+        let file = file(vec![use_of(at(
+            "addr1w8r6kmlsm7gfwnaqrlxhjufnv7gjqlz82vj0rv5gukqguhcs9tj6k",
         ))]);
         assert_eq!(file.validate(CREDENTIAL), Err(Invalid::AddressNotBech32));
     }

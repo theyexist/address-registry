@@ -1,0 +1,8 @@
+# $PERP staking — where holders stake their $PERP for rewards: a wallet (key
+# stake credential, handle `$perpstaking`), not a script, so only its stake
+# identifies it. Holds ~21.6% of $PERP's supply, which counted as one person (the
+# token's one "kraken") until it was registered.
+stake = "stake1uxw8pmwq7my926m9xuk5zpy83at8hyzqla4qxs843sfjznsgtwgxy"
+label = "PERP staking"
+kind = "staking"
+source = "attested by the operator of the flow explorer 2026-10-27: the address $PERP holders stake to for rewards; handle $perpstaking"

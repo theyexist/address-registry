@@ -4,6 +4,11 @@ credential = "1af84a9e697e1e7b042a0a06f061e88182feb9e9ada950b36a916bd5"
 category = "exchange"
 label = "SaturnSwap"
 source = "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY"
+# The same script's other registered form — the one the old ADDRESS_REGISTRY
+# named. Both decode to this credential.
+also_at = [
+    "addr1zyd0sj57d9lpu7cy9g9qdurpazqc9l4eaxk6j59nd2gkh4275jq4yvpskgayj55xegdp30g5rfynax66r8vgn9fldndsqzf5tn",
+]
 
 [use.derived_from]
 address = "addr1zyd0sj57d9lpu7cy9g9qdurpazqc9l4eaxk6j59nd2gkh4gdwqualaz4tsjecupk566prptjpge3kgzjg4nrsmhceehs894qvc"

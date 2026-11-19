@@ -1,0 +1,14 @@
+# Wayup's settlement wallet — where the overwhelming majority of its volume is
+# settled. A KEY address, not a contract: the old `ADDRESS_REGISTRY` filed it
+# under `Marketplace { Wayup, Sale }` as an attribution fact, and its own test
+# `marketplace_key_addresses_are_not_contracts` pins that the payment part is a
+# key and that it is not the sale validator. Nothing here holds under a datum.
+credential = "fdba406359a8a81e4d1f512f9ddfcbf20a79a262a7a54cd78ccdaa34"
+
+[[use]]
+category = "wallet"
+label = "Wayup"
+source = "shared-crates/address-registry, ADDRESS_REGISTRY: the Wayup settlement address; `marketplace_key_addresses_are_not_contracts` proves its payment part is a key"
+
+[use.derived_from]
+address = "addr1v87m5srrtx52s8jdragjl8wle0eq57dzv2n62nxh3nx65dq0edwwu"

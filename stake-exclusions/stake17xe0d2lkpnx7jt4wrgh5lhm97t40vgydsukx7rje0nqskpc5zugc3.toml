@@ -1,0 +1,6 @@
+# Spectrum/Splash's LBSP ("Liquidity Bootstrapping Stake Pool") credential — the
+# protocol's documented mechanism for delegating contract-locked ADA to its own
+# stake pool. Every validator in the family shares it BY DESIGN. Naming it would
+# repeat the 168 Mekka counterparties wrongly labelled "Splash".
+stake = "stake17xe0d2lkpnx7jt4wrgh5lhm97t40vgydsukx7rje0nqskpc5zugc3"
+reason = "Splash/Spectrum's LBSP staking credential: fourteen payment scripts registered under both Splash and DexHunter delegate here by design, so it names a staking arrangement, not an operator"

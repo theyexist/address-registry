@@ -1,0 +1,5 @@
+# SaturnSwap — three of its own scripts, sole label.
+stake = "stake1u902fq2jxqctywjf22rv5xsch52p5jf7nddpnkyfj5lkekcnnhvtv"
+label = "SaturnSwap"
+kind = "exchange"
+source = "delegation shared by three registered SaturnSwap scripts and carrying no other registered label"

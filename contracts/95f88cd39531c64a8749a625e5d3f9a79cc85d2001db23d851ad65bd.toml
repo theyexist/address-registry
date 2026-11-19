@@ -1,0 +1,12 @@
+# JPG.store's minting contract. `Minter(JpgStore)` in the old table, which had no
+# label of its own beyond the minter's name and no address — the address below is
+# the old `ADDRESS_REGISTRY`'s, and its payment credential is this one.
+credential = "95f88cd39531c64a8749a625e5d3f9a79cc85d2001db23d851ad65bd"
+
+[[use]]
+category = "minter"
+label = "JPG.store"
+source = "shared-crates/address-registry, ADDRESS_REGISTRY: Minter(JpgStore)"
+
+[use.derived_from]
+address = "addr1xx2l3rxnj5cuvj58fxnztewnlxneejzayqqakg7c2xkkt0gejuwlk348lfs3mh65tm5ym27hg9z5cjphv6w7sv3dwxqsk9as6l"

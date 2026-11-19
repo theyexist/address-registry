@@ -7,6 +7,7 @@
 
 use address_registry_schema::{
     Behaviour, Category, DerivedFrom, DerivedFromStatus, ResolveReport, Resolved, Shape,
+    StakeLabels, StakeServices,
 };
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -52,7 +53,7 @@ fn the_committed_artefact_reads_with_the_published_schema() {
     let lock = lock.first().expect("TOOL lock is authored");
     assert_eq!(lock.category, Category::Lock);
     assert_eq!(lock.shape, Some(Shape::TimestampAndOwner));
-    assert!(matches!(lock.derived_from, DerivedFrom::Address(_)));
+    assert!(matches!(lock.derived_from, DerivedFrom::Address { .. }));
 
     // Neither is claimed upstream, and both are still in `credentials` — that
     // empty list is the behavioural gap, not a missing row.
@@ -108,6 +109,47 @@ fn the_binary_table_decodes_to_the_same_rows_as_the_json() {
 }
 
 #[test]
+fn the_stake_table_is_the_lookup_its_json_describes() {
+    let services: StakeServices = read(&repo().join("resolved/stake-services.json"));
+    assert_eq!(services.format, address_registry_schema::stake::FORMAT);
+
+    let bytes = fs::read(repo().join("resolved/stake-services.bin")).expect("written");
+    let labels = StakeLabels::from_bytes(&bytes).expect("the binary decodes");
+    assert_eq!(labels.entries.len(), services.services.len());
+
+    for service in &services.services {
+        let label = labels
+            .get(&service.stake)
+            .unwrap_or_else(|| panic!("{} is in the JSON and not the lookup", service.stake));
+        assert_eq!(label.label, service.label);
+        assert_eq!(label.kind, service.kind);
+    }
+    // An exclusion is a claim that a key names no service; the lookup must not
+    // answer for it at all.
+    for exclusion in &services.exclusions {
+        assert!(
+            labels.get(&exclusion.stake).is_none(),
+            "{} is excluded and in the lookup",
+            exclusion.stake
+        );
+    }
+}
+
+/// A consumer that cannot fetch — a wasm module, a worker with no egress —
+/// vendors the file and parses it. This compiles only while the committed bytes
+/// are a table the crate reads, which is the whole build-time story.
+#[test]
+fn the_artefacts_embed_at_build_time() {
+    const BEHAVIOUR: &[u8] = include_bytes!("../../../resolved/behaviour.bin");
+    const STAKES: &[u8] = include_bytes!("../../../resolved/stake-services.bin");
+
+    let behaviour = Behaviour::from_bytes(BEHAVIOUR).expect("behaviour.bin decodes");
+    assert_eq!(behaviour.format, address_registry_schema::FORMAT);
+    let labels = StakeLabels::from_bytes(STAKES).expect("stake-services.bin decodes");
+    assert!(!labels.entries.is_empty());
+}
+
+#[test]
 fn resolve_reproduces_the_artefact_from_the_committed_inputs() {
     let out = scratch();
     let status = Command::new(env!("CARGO_BIN_EXE_address-registry"))
@@ -116,6 +158,10 @@ fn resolve_reproduces_the_artefact_from_the_committed_inputs() {
         .arg(repo().join("imported/registry.json"))
         .arg("--contracts")
         .arg(repo().join("contracts"))
+        .arg("--stakes")
+        .arg(repo().join("stakes"))
+        .arg("--stake-exclusions")
+        .arg(repo().join("stake-exclusions"))
         .arg("--out")
         .arg(&out)
         .status()
@@ -142,7 +188,7 @@ fn resolve_reproduces_the_artefact_from_the_committed_inputs() {
         .authored
         .values()
         .flatten()
-        .filter(|use_of| matches!(use_of.derived_from, DerivedFrom::Address(_)))
+        .filter(|use_of| matches!(use_of.derived_from, DerivedFrom::Address { .. }))
         .count();
     let with_claim = committed
         .authored

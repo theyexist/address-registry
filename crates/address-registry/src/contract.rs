@@ -10,27 +10,11 @@
 //! see the overload.
 
 use crate::error::{Error, Result};
+use crate::files;
 use address_registry_schema::{Contract, ContractFile};
 use std::collections::BTreeMap;
 use std::fs;
 use std::path::{Path, PathBuf};
-
-/// The `*.toml` files in `dir`, sorted. The directory listing is the index, so
-/// every reader of the authored layer starts here rather than deciding for itself
-/// what counts as a contract file.
-pub fn files(dir: &Path) -> Result<Vec<PathBuf>> {
-    let mut files = Vec::new();
-    let entries = fs::read_dir(dir).map_err(|error| Error::at(dir, error))?;
-    for entry in entries {
-        let entry = entry.map_err(|error| Error::at(dir, error))?;
-        let path = entry.path();
-        if path.extension().and_then(|ext| ext.to_str()) == Some("toml") {
-            files.push(path);
-        }
-    }
-    files.sort();
-    Ok(files)
-}
 
 /// Parse one file and check it against its own name.
 ///
@@ -57,7 +41,7 @@ pub fn read(path: &Path) -> Result<ContractFile> {
 pub fn load(dir: &Path) -> Result<BTreeMap<String, Vec<Contract>>> {
     let mut contracts = BTreeMap::new();
     let mut declared_by: BTreeMap<String, PathBuf> = BTreeMap::new();
-    for path in files(dir)? {
+    for path in files::toml(dir)? {
         let file = read(&path)?;
         if let Some(first) = declared_by.get(&file.credential) {
             return Err(Error::at(

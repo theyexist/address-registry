@@ -1,14 +1,16 @@
 {
-  "format": 4,
-  "generated_at": "2026-11-19T04:24:01.924Z",
+  "format": 5,
+  "generated_at": "2026-11-19T05:25:46.551Z",
   "counts": {
-    "credentials": 861,
-    "authored": 61,
-    "authored_credentials": 61,
+    "credentials": 864,
+    "authored": 65,
+    "authored_credentials": 64,
     "authored_with_upstream_claim": 25,
-    "authored_only": 36,
-    "derived_from_verified": 59,
-    "derived_from_attested": 2
+    "authored_only": 39,
+    "derived_from_verified": 63,
+    "derived_from_attested": 2,
+    "stake_services": 6,
+    "stake_exclusions": 3
   },
   "authored": [
     {
@@ -156,6 +158,15 @@
       "derived_from": "verified"
     },
     {
+      "credential": "4e184586ce5d62d46e0d1ab3305f1d7b811278f1c27eecbf2baacc4d",
+      "category": "staking",
+      "shape": null,
+      "label": "The Vault",
+      "project": "CNFT Tools",
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
       "credential": "55ff0e63efa0694e8065122c552e80c7b51768b7f20917af25752a7c",
       "category": "exchange",
       "shape": null,
@@ -270,6 +281,24 @@
       "label": "JPG.store Sale",
       "project": null,
       "upstream_claims": 1,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "9068a7a3f008803edac87af1619860f2cdcde40c26987325ace138ad",
+      "category": "marketplace",
+      "shape": null,
+      "label": "JPG.store Offer",
+      "project": null,
+      "upstream_claims": 1,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "95f88cd39531c64a8749a625e5d3f9a79cc85d2001db23d851ad65bd",
+      "category": "minter",
+      "shape": null,
+      "label": "JPG.store",
+      "project": null,
+      "upstream_claims": 0,
       "derived_from": "verified"
     },
     {
@@ -556,6 +585,15 @@
       "category": "exchange",
       "shape": null,
       "label": "Axo",
+      "project": null,
+      "upstream_claims": 0,
+      "derived_from": "verified"
+    },
+    {
+      "credential": "fdba406359a8a81e4d1f512f9ddfcbf20a79a262a7a54cd78ccdaa34",
+      "category": "wallet",
+      "shape": null,
+      "label": "Wayup",
       "project": null,
       "upstream_claims": 0,
       "derived_from": "verified"

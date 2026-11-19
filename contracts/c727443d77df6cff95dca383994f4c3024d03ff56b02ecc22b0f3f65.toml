@@ -5,6 +5,8 @@ credential = "c727443d77df6cff95dca383994f4c3024d03ff56b02ecc22b0f3f65"
 
 [[use]]
 category = "marketplace"
+purpose = "sale"
+market = "jpg.store"
 label = "JPG.store Sale"
 source = "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY (JPG.store, Sale, V2)"
 

@@ -1,0 +1,8 @@
+# JPG.store — KEY stake credential 81728e7e…cb806d, the delegation part of the V1
+# sale escrow (addr1zxgx3far…). A different credential from the script one, and
+# reached from one registered address only, so it is listed explicitly rather
+# than inferred.
+stake = "stake1uxqh9rn76n8nynsnyvf4ulndjv0srcc8jtvumut3989cqmgjt49h6"
+label = "JPG.store"
+kind = "marketplace"
+source = "delegation part of the registered JPG.store V1 sale escrow addr1zxgx3far… (script payment + key stake); credential 81728e7ed4cf324e1323135e7e6d931f01e30792d9cdf17129cb806d"

@@ -1,0 +1,13 @@
+# The Vault, CNFT Tools' staking contract. The old table records the label and the
+# project but not a datum shape, so none is claimed here — an unread datum is a
+# gap, and naming a shape nobody has verified would close it with a guess.
+credential = "4e184586ce5d62d46e0d1ab3305f1d7b811278f1c27eecbf2baacc4d"
+
+[[use]]
+category = "staking"
+label = "The Vault"
+project = "CNFT Tools"
+source = "shared-crates/address-registry, ADDRESS_REGISTRY: Staking { label: \"The Vault\", project: \"CNFT Tools\" }"
+
+[use.derived_from]
+address = "addr1z98ps3vxeewk94rwp5dtxvzlr4aczync78p8am9l9w4vcn04fr9rh39dpgmzl234njvxfpnah654jxuwzlgnqejnnkwq2zuf48"

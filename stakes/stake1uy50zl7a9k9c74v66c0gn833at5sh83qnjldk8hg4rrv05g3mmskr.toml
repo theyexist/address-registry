@@ -1,0 +1,6 @@
+# Anvil — Cardano minting API. Takes a flat per-mint fee (1.15 ADA at time of
+# writing) in the mint transaction itself, alongside the project's own payment.
+stake = "stake1uy50zl7a9k9c74v66c0gn833at5sh83qnjldk8hg4rrv05g3mmskr"
+label = "Anvil"
+kind = "minting_provider"
+source = "observed 2026-08-22: constant 1.15 ADA mint-tx fee across policies 55bd0ac4 (KAT Pack, 333), 6b42eca9 (chadano_citizen, 1501), e26a8565 (perps_into_the_factions, 242), 812197d5 (Biddy_DeGoat, 127); 1,009 unspent ~1 ADA UTxOs from unrelated projects"

@@ -1,0 +1,5 @@
+# A person's wallet. Listed once as "Wayup" because two of its addresses are that
+# seller's Wayup listings, which carry the seller's own stake key — the trap the
+# table's rules exist to prevent. Removed by its owner's confirmation.
+stake = "stake1uxwcw3rr36r8q9e5egy3e74cmazpjvx4t5ajsq50xhm568celda4g"
+reason = "a person's wallet (handle $curiousfutures), confirmed by its owner 2026-10-27: a key stake credential with 18 payment addresses. Listed once as Wayup because two of its addresses are that seller's Wayup listings, which carry the seller's own stake key"

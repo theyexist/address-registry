@@ -4,6 +4,8 @@ credential = "a76f0fb801a29f591e9871576508d85b0b5f3c38774f65032f58fdad"
 
 [[use]]
 category = "marketplace"
+purpose = "sale"
+market = "wayup"
 label = "Wayup Sale"
 source = "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY (Wayup, Sale)"
 
