@@ -26,29 +26,37 @@ contribute a row.
 - **Not a claim of authority over anybody's script.** A row says what this
   registry believes and why, and can be withdrawn.
 
-Scope is Cardano, keyed by payment credential. Key-based stake services are a
-different table; a credential here is the payment part of a script address.
+Scope is Cardano, in two key spaces: a **payment credential** for what a script
+is, and a **stake credential** for who runs an ordinary wallet. They are separate
+tables in one repository because they are separate questions with separate
+lifetimes, not because either is optional.
 
-## The two layers
+## The three layers
 
 | layer | path | whose statement it is | how it changes |
 | --- | --- | --- | --- |
 | imported | `imported/` | Strica's and Eternl's | regenerated from a recorded revision |
 | authored | `contracts/` | this project's | a reviewed pull request |
+| stake services | `stakes/`, `stake-exclusions/` | this project's | a reviewed pull request |
 
 The imported layer is **claims**: a project's name for a script, with the parts
 of its label kept separate. It assigns no behaviour and resolves nothing. Where
 two upstreams give one credential different names, the disagreement is recorded
 in `imported/report.json` and neither wins by import order.
 
-The authored layer is **behaviour**: `kind`, datum `shape`, label, project and
-the evidence. It overlays the claims and never rewrites them. Nobody outside this
-repository is quoted as asserting a `kind` or a `shape` — which is why every
-authored row requires a `source`.
+The authored layer is **behaviour**: `category`, marketplace `purpose`, datum
+`shape`, label, project and the evidence. It overlays the claims and never
+rewrites them. Nobody outside this repository is quoted as asserting a
+`category` or a `shape` — which is why every authored row requires a `source`.
+
+The stake layer is **attribution**: which ordinary wallet a service uses, keyed
+by its stake credential, with the same evidence rule. An exclusion is part of it:
+a key deliberately not a service, with the reason, so a wrong entry is not
+re-proposed.
 
 ## Evidence
 
-A `kind` or a `shape` without a source is a fabrication with a filename.
+A `category` or a `shape` without a source is a fabrication with a filename.
 
 Accepted evidence, strongest first:
 

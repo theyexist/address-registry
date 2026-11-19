@@ -1,6 +1,6 @@
 {
-  "format": 4,
-  "generated_at": "2026-11-19T04:24:01.924Z",
+  "format": 5,
+  "generated_at": "2026-11-19T05:25:46.551Z",
   "contracts": {
     "0116b17c1f359bf0190cff4abf0ffc1adac8cc05288e0691f206a448": [
       {
@@ -52,7 +52,10 @@
         "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
         "derived_from": {
           "address": "addr1zyd0sj57d9lpu7cy9g9qdurpazqc9l4eaxk6j59nd2gkh4gdwqualaz4tsjecupk566prptjpge3kgzjg4nrsmhceehs894qvc"
-        }
+        },
+        "also_at": [
+          "addr1zyd0sj57d9lpu7cy9g9qdurpazqc9l4eaxk6j59nd2gkh4275jq4yvpskgayj55xegdp30g5rfynax66r8vgn9fldndsqzf5tn"
+        ]
       }
     ],
     "2025463437ee5d64e89814a66ce7f98cb184a66ae85a2fbbfd750106": [
@@ -87,6 +90,8 @@
     "27d46ecbec94b052d8f875cf3beafd0e8ca40e8ad069f677e0a128ea": [
       {
         "category": "marketplace",
+        "purpose": "offer",
+        "market": "wayup",
         "label": "Wayup Offer",
         "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY (Wayup, Offer)",
         "derived_from": {
@@ -163,6 +168,17 @@
         "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
         "derived_from": {
           "address": "addr1z9yxl4g9spssxd9n7kdg2xh26fgxy7uvw2eqrz3yudv335nxxjtcwkuntjk36ms25yahpmzr6y5u8gdc9h80mxyaxnqqnpxw2d"
+        }
+      }
+    ],
+    "4e184586ce5d62d46e0d1ab3305f1d7b811278f1c27eecbf2baacc4d": [
+      {
+        "category": "staking",
+        "label": "The Vault",
+        "project": "CNFT Tools",
+        "source": "shared-crates/address-registry, ADDRESS_REGISTRY: Staking { label: \"The Vault\", project: \"CNFT Tools\" }",
+        "derived_from": {
+          "address": "addr1z98ps3vxeewk94rwp5dtxvzlr4aczync78p8am9l9w4vcn04fr9rh39dpgmzl234njvxfpnah654jxuwzlgnqejnnkwq2zuf48"
         }
       }
     ],
@@ -287,10 +303,32 @@
     "9068a7a3f008803edac87af1619860f2cdcde40c26987325ace138ad": [
       {
         "category": "marketplace",
+        "purpose": "sale",
+        "market": "jpg.store",
         "label": "JPG.store Sale",
         "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY (JPG.store, Sale, V1)",
         "derived_from": {
           "address": "addr1zxgx3far7qygq0k6epa0zcvcvrevmn0ypsnfsue94nsn3tvpw288a4x0xf8pxgcntelxmyclq83s0ykeehchz2wtspks905plm"
+        }
+      },
+      {
+        "category": "marketplace",
+        "purpose": "offer",
+        "market": "jpg.store",
+        "label": "JPG.store Offer",
+        "source": "shared-crates/address-registry, ADDRESS_REGISTRY: the collection-offer escrow, the same script as the V1 sale under another delegation form",
+        "derived_from": {
+          "address": "addr1xxgx3far7qygq0k6epa0zcvcvrevmn0ypsnfsue94nsn3tfvjel5h55fgjcxgchp830r7h2l5msrlpt8262r3nvr8eks2utwdd"
+        }
+      }
+    ],
+    "95f88cd39531c64a8749a625e5d3f9a79cc85d2001db23d851ad65bd": [
+      {
+        "category": "minter",
+        "label": "JPG.store",
+        "source": "shared-crates/address-registry, ADDRESS_REGISTRY: Minter(JpgStore)",
+        "derived_from": {
+          "address": "addr1xx2l3rxnj5cuvj58fxnztewnlxneejzayqqakg7c2xkkt0gejuwlk348lfs3mh65tm5ym27hg9z5cjphv6w7sv3dwxqsk9as6l"
         }
       }
     ],
@@ -337,6 +375,8 @@
     "a76f0fb801a29f591e9871576508d85b0b5f3c38774f65032f58fdad": [
       {
         "category": "marketplace",
+        "purpose": "sale",
+        "market": "wayup",
         "label": "Wayup Sale",
         "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY (Wayup, Sale)",
         "derived_from": {
@@ -408,6 +448,8 @@
     "c727443d77df6cff95dca383994f4c3024d03ff56b02ecc22b0f3f65": [
       {
         "category": "marketplace",
+        "purpose": "sale",
+        "market": "jpg.store",
         "label": "JPG.store Sale",
         "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY (JPG.store, Sale, V2)",
         "derived_from": {
@@ -616,6 +658,16 @@
         "source": "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY",
         "derived_from": {
           "address": "addr1z87v39k7k4war0hue33yd6yxc8cgmmelueeaqqyspq3zdp8yranhazuukvkljzzene0nh4ckfqdhtj9zs97eaqcskt3qy8704c"
+        }
+      }
+    ],
+    "fdba406359a8a81e4d1f512f9ddfcbf20a79a262a7a54cd78ccdaa34": [
+      {
+        "category": "wallet",
+        "label": "Wayup",
+        "source": "shared-crates/address-registry, ADDRESS_REGISTRY: the Wayup settlement address; `marketplace_key_addresses_are_not_contracts` proves its payment part is a key",
+        "derived_from": {
+          "address": "addr1v87m5srrtx52s8jdragjl8wle0eq57dzv2n62nxh3nx65dq0edwwu"
         }
       }
     ]

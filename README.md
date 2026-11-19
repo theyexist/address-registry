@@ -1,25 +1,32 @@
 # address-registry
 
 A machine-readable registry of Cardano scripts, keyed by payment credential —
-what a contract is, what it does with what it holds, and who says so.
+what a contract is, what it does with what it holds, and who says so — plus the
+stake-keyed table of services run from ordinary wallets.
 
 The governance, the evidence standard, the dispute path and the licence are in
 [`CHARTER.md`](CHARTER.md).
 
-## Two layers
+## Three layers
 
 | layer | path | written by | regenerated |
 | --- | --- | --- | --- |
 | **imported** | `imported/registry.json` | `address-registry import` | on demand, from pinned upstreams |
 | **authored** | `contracts/<credential>.toml` | a human, in a PR | never |
+| **stake services** | `stakes/<stake address>.toml`, `stake-exclusions/<stake address>.toml` | a human, in a PR | never |
 
 The imported layer carries **claims**: the project and contract name each
 upstream gives a credential, with the upstream's revision recorded. It never
-assigns a `kind` or a datum `shape`.
+assigns a `category` or a datum `shape`.
 
 The authored layer carries the **behaviour**: what the script is, how a datum
 names its owner, and the provenance for that claim. It overlays the imported
 claims; it does not replace them.
+
+The stake-service layer carries a different question: **who runs a wallet**,
+keyed by its stake credential. It is authored the same way and resolved into its
+own artefact, because it changes on its own schedule and a wrong entry should be
+fixable without a release. See [Stake services](#stake-services).
 
 ## Authored
 
@@ -53,6 +60,18 @@ address = "addr1w8r6kmlsm7gfwnaqrlxhjufnv7gjqlz82vj0rv5gukqguhcs9tj6j"
   credential, as lowercase hex CBOR. The registry does not decode it, so it cannot
   claim the bytes match the shape. What it can claim is where they came from, and
   a consumer's decoder is what asserts they read as declared.
+- `purpose` is optional and belongs to `marketplace` uses only: `offer`, `sale`
+  or `fee`. It is typed rather than left in the label because a consumer selects
+  behaviour by it — a collection-offer index must not read a sale escrow as an
+  offer, and both are the same category.
+- `market` is optional and belongs to `marketplace` uses only: the venue as a
+  machine key (`jpg.store`, `wayup`). The label is prose and may say anything;
+  this is what a consumer matches to choose a decoder, so it is restricted to
+  lowercase letters, digits, `.` and `-`.
+- `also_at` is optional and lists further addresses the same use is registered
+  at — one script under another delegation form. The address in `derived_from` is
+  the one the credential was checked against; `also_at` are its siblings, and
+  every one of them must decode to the same credential.
 - `source` is required and must not be empty. A behaviour with no provenance is
   a fabrication with a filename.
 - `derived_from` is either an `address` whose payment credential must decode to
@@ -84,6 +103,45 @@ cargo run -p address-registry -- resolve
 `resolved/behaviour.bin` (the curated rows only). A credential with an authored
 use and no upstream claim appears with an empty claim list; that gap is the reason
 the registry exists.
+
+## Stake services
+
+A payment credential names a contract. A service run from an ordinary wallet is
+the other thing a consumer keeps finding: an exchange's hot wallet, a minting
+provider, a staking programme. It has as many payment addresses as it likes and
+one stable stake key, so it is keyed by that — `stakes/<stake address>.toml`:
+
+```toml
+stake = "stake1uy50zl7a9k9c74v66c0gn833at5sh83qnjldk8hg4rrv05g3mmskr"
+label = "Anvil"
+kind = "minting_provider"
+source = "observed 2026-08-22: constant 1.15 ADA mint-tx fee across …"
+```
+
+- `kind` is `minting_provider`, `marketplace`, `exchange` or `staking`. A
+  consumer that ranks holders needs the distinction: a minting provider's wallet
+  appears in every mint it serves, and a marketplace escrow holds everything on
+  sale.
+- `source` is required, for the same reason a behaviour's is.
+- A key that is deliberately **not** a service goes in
+  `stake-exclusions/<stake address>.toml` with the `reason` it is not. That is
+  where a credential two entities reach, or a customer's own stake key, is
+  recorded — the exclusion is evidence too, and it stops the same wrong entry
+  being re-proposed.
+
+The rule for an entry is the one the compiled table carried: only a stake
+credential that genuinely belongs to the service. Never derive one from a
+per-customer contract or a prefix match — that is how a person's wallet ends up
+labelled as a venue.
+
+```sh
+cargo run -p address-registry -- resolve
+```
+
+`resolve` writes `resolved/stake-services.json` (the whole record) and
+`resolved/stake-services.bin` (the lookup: 29 stake bytes, a kind and a label per
+entry). The binary is the same `STKL` layout `shared-crates/address-registry`
+already publishes, so a consumer can switch source without a new decoder.
 
 ## Import
 
@@ -154,9 +212,10 @@ There are three artefacts, because consumers ask different questions:
 
 | you need | fetch | today |
 | --- | --- | --- |
-| a classification | `resolved/behaviour.bin` | 14 KB (7.5 KB gzipped) |
-| every field as text | `resolved/behaviour.json` | 25 KB (7.7 KB gzipped) |
-| that, plus who else names them | `resolved/registry.json` | 450 KB (63 KB gzipped) |
+| a classification | `resolved/behaviour.bin` | 15 KB (8 KB gzipped) |
+| a wallet's operator | `resolved/stake-services.bin` | 247 B |
+| every field as text | `resolved/behaviour.json`, `resolved/stake-services.json` | 27 KB + 3 KB |
+| that, plus who else names them | `resolved/registry.json` | 452 KB |
 
 The binary's advantage is the **index**, not the byte count: gzipped the two
 behaviour files are within 3% of each other, because the labels and sources are
@@ -199,6 +258,13 @@ if resolved.format != address_registry_schema::FORMAT {
     // a file from a newer schema than this build understands
 }
 let names = resolved.claims(&credential); // empty when nobody upstream claims it
+
+// A wallet's operator, from its stake key. `get` takes the bech32 address;
+// `get_bytes` takes the 29 bytes a holder table already has.
+let labels = address_registry_schema::StakeLabels::from_bytes(&bytes)?;
+if let Some(service) = labels.get(&stake_address) {
+    // service.label, service.kind
+}
 ```
 
 A consumer that pins the crate therefore stops doing the thing that was fragile:
@@ -206,6 +272,14 @@ adding a contract to the registry no longer needs a rev bump anywhere. Adding a
 *field* does, and bumps `format`, because deserialisation rejects keys it does
 not know rather than reading a registry it only half understands. The same rule
 is what makes a typo in a `contracts/*.toml` an error instead of a silent drop.
+
+**The binaries are also the build-time form.** Fetching at run time is a choice,
+not a requirement: a wasm module, a worker with no egress, or a CLI that wants
+no network on start-up vendors the file and parses it —
+`Behaviour::from_bytes(include_bytes!("resolved/behaviour.bin"))` — with no
+dependency on this repository at build time beyond the copy it carries. What
+stays centralised is the DATA: it is authored here as TOML and resolved here;
+the binary is a compiled view of it, never the source.
 
 ## Publication
 
@@ -250,7 +324,9 @@ ten thousand. Past ~100 KB of index (about 2,800 rows), shard to
 
 ## Status
 
-The import layer, the authored layer, the resolved artefacts and the charter are
-in place, and the artefacts are published by being committed. The authored layer
-carries **61 uses**, covering every credential the compiled
-`shared-crates/address-registry` table carried before this repository existed.
+The import layer, the authored layer, the stake-service layer, the resolved
+artefacts and the charter are in place, and the artefacts are published by being
+committed. The authored layer carries **65 uses on 64 credentials** — a
+credential may do more than one job — covering every row the compiled
+`shared-crates/address-registry` tables carried before this repository existed.
+The stake layer carries **6 services and 3 exclusions**.

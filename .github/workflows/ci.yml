@@ -14,11 +14,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # The authored layer is edited by hand, one file per credential, and the full
-  # suite reports a bad file as a failed artefact comparison. This job reports it
-  # as the file it is, and only for the files the change touches.
+  # The authored layer is edited by hand, one file per key, and the full suite
+  # reports a bad file as a failed artefact comparison. This job reports it as
+  # the file it is, and only for the files the change touches.
   contracts:
-    name: validate changed contracts
+    name: validate changed authored files
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -34,30 +34,31 @@ jobs:
           extra_nix_config: |
             experimental-features = nix-command flakes
 
-      # `validate` reads the whole `contracts/` directory as well as the files
-      # it is handed, so a new file that repeats a credential another file
-      # already declares fails here too.
-      - name: Validate the contract files this change touches
+      # `validate` reads every authored directory as well as the files it is
+      # handed, so a new file that repeats a key another file already declares
+      # fails here too. Stake services and exclusions are authored the same way
+      # and are diffed with the contracts.
+      - name: Validate the authored files this change touches
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: |
           set -euo pipefail
 
           if [ -z "${BASE_SHA}" ] || ! git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null; then
-            echo "No base commit to diff against; validating every contract file."
+            echo "No base commit to diff against; validating every authored file."
             nix run . -- validate
             exit 0
           fi
 
-          changed="$(git diff --name-only --diff-filter=ACMR "${BASE_SHA}" HEAD -- contracts)"
+          changed="$(git diff --name-only --diff-filter=ACMR "${BASE_SHA}" HEAD -- contracts stakes stake-exclusions)"
 
           if [ -z "${changed}" ]; then
-            echo "No contract files changed."
+            echo "No authored files changed."
             exit 0
           fi
 
           mapfile -t files <<< "${changed}"
-          echo "Changed contract files:"
+          echo "Changed authored files:"
           printf '  %s\n' "${files[@]}"
           nix run . -- validate "${files[@]}"
 

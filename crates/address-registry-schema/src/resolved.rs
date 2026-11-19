@@ -102,6 +102,10 @@ pub struct ResolveCounts {
     pub authored_only: usize,
     pub derived_from_verified: usize,
     pub derived_from_attested: usize,
+    /// Stake services, one per `stakes/*.toml`.
+    pub stake_services: usize,
+    /// Stake keys deliberately not a service, one per `stake-exclusions/*.toml`.
+    pub stake_exclusions: usize,
 }
 
 #[derive(Debug, Deserialize, PartialEq, Serialize)]
@@ -118,7 +122,8 @@ pub struct AuthoredRow {
 #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum DerivedFromStatus {
-    /// A `derived_from.address` that decoded to this credential.
+    /// A `derived_from.address` (or one of its `also` forms) that decoded to
+    /// this credential.
     Verified,
     /// No address registered; the reason is in the authored file.
     Attested,

@@ -10,20 +10,30 @@
 
 use crate::contract;
 use crate::error::{Error, Result};
+use crate::stakes;
 use crate::write_json;
 use address_registry_schema::{
     AuthoredRow, Behaviour, DerivedFrom, DerivedFromStatus, Imported, ResolveCounts, ResolveReport,
-    Resolved,
+    Resolved, StakeLabels, StakeServices,
 };
 use std::fs;
 use std::path::Path;
 
-pub fn run(imported_path: &Path, contracts_dir: &Path, out: &Path) -> Result<()> {
+pub fn run(
+    imported_path: &Path,
+    contracts_dir: &Path,
+    stakes_dir: &Path,
+    stake_exclusions_dir: &Path,
+    out: &Path,
+) -> Result<()> {
     let text =
         fs::read_to_string(imported_path).map_err(|error| Error::at(imported_path, error))?;
     let imported: Imported =
         serde_json::from_str(&text).map_err(|error| Error::at(imported_path, error))?;
     let contracts = contract::load(contracts_dir)?;
+    let services = stakes::load_services(stakes_dir)?;
+    let exclusions = stakes::load_exclusions(stake_exclusions_dir)?;
+    stakes::check_disjoint(&services, &exclusions)?;
 
     let mut credentials = imported.credentials;
     let mut rows = Vec::new();
@@ -69,6 +79,8 @@ pub fn run(imported_path: &Path, contracts_dir: &Path, out: &Path) -> Result<()>
 
     let authored: usize = contracts.values().map(Vec::len).sum();
     let authored_credentials = contracts.len();
+    let service_count = services.len();
+    let exclusion_count = exclusions.len();
     let generated_at = crate::clock::now();
     // The two artefacts are written from the same pass so they cannot disagree.
     // `behaviour.bin` is the targeted read: the curated rows only.
@@ -86,7 +98,7 @@ pub fn run(imported_path: &Path, contracts_dir: &Path, out: &Path) -> Result<()>
     };
     let report = ResolveReport {
         format: address_registry_schema::FORMAT,
-        generated_at,
+        generated_at: generated_at.clone(),
         counts: ResolveCounts {
             credentials: resolved.credentials.len(),
             authored,
@@ -95,13 +107,29 @@ pub fn run(imported_path: &Path, contracts_dir: &Path, out: &Path) -> Result<()>
             authored_only: authored_credentials - with_claim,
             derived_from_verified: verified,
             derived_from_attested: attested,
+            stake_services: service_count,
+            stake_exclusions: exclusion_count,
         },
         authored: rows,
     };
+    // The stake table is a separate artefact because it is a separate question —
+    // WHO runs a wallet, not WHAT a script is — and its answer changes on its own
+    // schedule. The binary is byte-compatible with the `STKL` table shared-crates
+    // already publishes, so a consumer switches source without a new decoder.
+    let stake_services = StakeServices {
+        format: address_registry_schema::stake::FORMAT,
+        generated_at: generated_at.clone(),
+        services,
+        exclusions,
+    };
+    let stake_labels = StakeLabels::from_services(&stake_services.services)
+        .map_err(|error| Error::new(error.to_string()))?;
 
     let registry_path = out.join("registry.json");
     let behaviour_path = out.join("behaviour.json");
     let behaviour_bin_path = out.join("behaviour.bin");
+    let stakes_path = out.join("stake-services.json");
+    let stakes_bin_path = out.join("stake-services.bin");
     let report_path = out.join("report.json");
     fs::create_dir_all(out).map_err(|error| Error::at(out, error))?;
     write_json(&registry_path, &resolved)?;
@@ -111,6 +139,9 @@ pub fn run(imported_path: &Path, contracts_dir: &Path, out: &Path) -> Result<()>
         .map_err(|error| Error::new(error.to_string()))?;
     fs::write(&behaviour_bin_path, behaviour_bytes)
         .map_err(|error| Error::at(&behaviour_bin_path, error))?;
+    write_json(&stakes_path, &stake_services)?;
+    fs::write(&stakes_bin_path, stake_labels.to_bytes())
+        .map_err(|error| Error::at(&stakes_bin_path, error))?;
     write_json(&report_path, &report)?;
 
     println!("credentials  {}", report.counts.credentials);
@@ -126,8 +157,14 @@ pub fn run(imported_path: &Path, contracts_dir: &Path, out: &Path) -> Result<()>
         "  verified   {}   attested {}",
         report.counts.derived_from_verified, report.counts.derived_from_attested
     );
+    println!(
+        "stakes       {} services, {} exclusions",
+        report.counts.stake_services, report.counts.stake_exclusions
+    );
     println!("wrote        {}", registry_path.display());
     println!("             {}", behaviour_path.display());
     println!("             {}", behaviour_bin_path.display());
+    println!("             {}", stakes_path.display());
+    println!("             {}", stakes_bin_path.display());
     Ok(())
 }

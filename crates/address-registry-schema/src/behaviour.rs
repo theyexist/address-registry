@@ -15,9 +15,12 @@
 //! - an index record is the 28-byte credential, the record's absolute offset
 //!   (`u32`), its length (`u16`), and a `category` and `shape` code.
 //!   Classification needs nothing else, so it costs one 36-byte fetch.
-//! - the blob holds `label`, `project`, `source`, `derived_from` and an optional
-//!   `datum_example`, each a LEB128 byte length then UTF-8, read only when a
-//!   display needs them.
+//! - the blob holds `purpose`, `market`, `label`, `project`, `source`,
+//!   `derived_from` and an optional `datum_example`. The strings are a LEB128
+//!   byte length then UTF-8, read only when a display needs them. `purpose` is
+//!   one byte and `derived_from` carries every address form — the claim's own,
+//!   then a count and each further one — so a consumer recognises a contract at
+//!   any of its delegation addresses without fetching the claims.
 //!
 //! **A credential may appear more than once.** One address can do more than one
 //! job. Records are sorted by credential with duplicates adjacent, so a lookup is
@@ -29,13 +32,13 @@
 //! not know is refused rather than guessed.
 
 use crate::claim::credential;
-use crate::contract::{Category, Contract, DerivedFrom, Shape};
+use crate::contract::{Category, Contract, DerivedFrom, MarketplacePurpose, Shape};
 use crate::resolved::Behaviour;
 use std::collections::BTreeMap;
 use std::fmt;
 
 pub const MAGIC: &[u8; 4] = b"EXAR";
-pub const FORMAT: u16 = 4;
+pub const FORMAT: u16 = 5;
 pub const HEADER: usize = 12;
 pub const INDEX_RECORD: usize = 36;
 pub const CREDENTIAL: usize = 28;
@@ -106,6 +109,8 @@ impl Behaviour {
                 put_opt_str(&mut record, contract.label.as_deref());
                 put_opt_str(&mut record, contract.project.as_deref());
                 put_str(&mut record, &contract.source);
+                record.push(purpose_code(contract.purpose));
+                put_opt_str(&mut record, contract.market.as_deref());
                 match &contract.derived_from {
                     DerivedFrom::Attested(reason) => {
                         record.push(0);
@@ -114,6 +119,10 @@ impl Behaviour {
                     DerivedFrom::Address(address) => {
                         record.push(1);
                         put_str(&mut record, address);
+                        put_len(&mut record, contract.also_at.len());
+                        for form in &contract.also_at {
+                            put_str(&mut record, form);
+                        }
                     }
                 }
                 // Length zero means no example; validation refuses an empty one,
@@ -213,9 +222,21 @@ impl Behaviour {
             let label = record.optional_string()?;
             let project = record.optional_string()?;
             let source = record.string()?;
-            let derived_from = match record.byte()? {
-                0 => DerivedFrom::Attested(record.string()?),
-                1 => DerivedFrom::Address(record.string()?),
+            let purpose = purpose_from_code(record.byte()?).ok_or(BehaviourError::UnknownCode(
+                "purpose",
+                record.bytes[record.at - 1],
+            ))?;
+            let market = record.optional_string()?;
+            let (derived_from, also_at) = match record.byte()? {
+                0 => (DerivedFrom::Attested(record.string()?), Vec::new()),
+                1 => {
+                    let address = record.string()?;
+                    let mut also_at = Vec::new();
+                    for _ in 0..record.len()? {
+                        also_at.push(record.string()?);
+                    }
+                    (DerivedFrom::Address(address), also_at)
+                }
                 other => return Err(BehaviourError::UnknownCode("derived_from", other)),
             };
             let example_len = record.len()?;
@@ -230,12 +251,15 @@ impl Behaviour {
 
             contracts.entry(hex(key)).or_default().push(Contract {
                 category,
+                purpose,
+                market,
                 shape,
                 datum_example,
                 label,
                 project,
                 source,
                 derived_from,
+                also_at,
             });
         }
         if expected_offset != bytes.len() {
@@ -299,6 +323,26 @@ pub const fn shape_from_code(code: u8) -> Option<Option<Shape>> {
         0 => Some(Some(Shape::OwnerOnly)),
         1 => Some(Some(Shape::TimestampAndOwner)),
         2 => Some(Some(Shape::TimestampAndOwners)),
+        _ => None,
+    }
+}
+
+/// A marketplace purpose's code. A non-marketplace use has none.
+pub const fn purpose_code(purpose: Option<MarketplacePurpose>) -> u8 {
+    match purpose {
+        None => 0,
+        Some(MarketplacePurpose::Offer) => 1,
+        Some(MarketplacePurpose::Sale) => 2,
+        Some(MarketplacePurpose::Fee) => 3,
+    }
+}
+
+pub const fn purpose_from_code(code: u8) -> Option<Option<MarketplacePurpose>> {
+    match code {
+        0 => Some(None),
+        1 => Some(Some(MarketplacePurpose::Offer)),
+        2 => Some(Some(MarketplacePurpose::Sale)),
+        3 => Some(Some(MarketplacePurpose::Fee)),
         _ => None,
     }
 }
@@ -418,6 +462,8 @@ mod tests {
     fn lock_use() -> Contract {
         Contract {
             category: Category::Lock,
+            purpose: None,
+            market: None,
             shape: Some(Shape::TimestampAndOwner),
             datum_example: None,
             label: Some("TSURU Lock".to_string()),
@@ -426,18 +472,22 @@ mod tests {
             derived_from: DerivedFrom::Address(
                 "addr1w8r6kmlsm7gfwnaqrlxhjufnv7gjqlz82vj0rv5gukqguhcs9tj6j".to_string(),
             ),
+            also_at: Vec::new(),
         }
     }
 
     fn staking_use() -> Contract {
         Contract {
             category: Category::Staking,
+            purpose: None,
+            market: None,
             shape: Some(Shape::OwnerOnly),
             datum_example: Some("d87981581c".to_string()),
             label: Some("TSURU Staking".to_string()),
             project: Some("TSURU".to_string()),
             source: "datum Constr 0 [Bytes(owner_pkh)]".to_string(),
             derived_from: DerivedFrom::Attested("no address registered".to_string()),
+            also_at: Vec::new(),
         }
     }
 
@@ -459,6 +509,36 @@ mod tests {
         let decoded = Behaviour::from_bytes(&bytes).expect("decodes");
         assert_eq!(decoded.generated_at, original.generated_at);
         assert_eq!(decoded.contracts, original.contracts);
+    }
+
+    #[test]
+    fn a_purpose_and_every_address_form_round_trip() {
+        const JPG: &str = "9068a7a3f008803edac87af1619860f2cdcde40c26987325ace138ad";
+        let mut original = behaviour();
+        let mut offer = lock_use();
+        offer.category = Category::Marketplace;
+        offer.purpose = Some(MarketplacePurpose::Offer);
+        offer.market = Some("jpg.store".to_string());
+        offer.shape = None;
+        offer.label = Some("JPG.store Offer".to_string());
+        offer.project = None;
+        offer.derived_from = DerivedFrom::Address(
+            "addr1xxgx3far7qygq0k6epa0zcvcvrevmn0ypsnfsue94nsn3tfvjel5h55fgjcxgchp830r7h2l5msrlpt8262r3nvr8eks2utwdd"
+                .to_string(),
+        );
+        offer.also_at = vec![
+            "addr1zxgx3far7qygq0k6epa0zcvcvrevmn0ypsnfsue94nsn3tvpw288a4x0xf8pxgcntelxmyclq83s0ykeehchz2wtspks905plm"
+                .to_string(),
+        ];
+        original.contracts.insert(JPG.to_string(), vec![offer]);
+
+        let decoded =
+            Behaviour::from_bytes(&original.to_bytes().expect("encodes")).expect("decodes");
+        let uses = decoded.get(JPG);
+        assert_eq!(uses.len(), 1);
+        assert_eq!(uses[0].purpose, Some(MarketplacePurpose::Offer));
+        assert_eq!(uses[0].market.as_deref(), Some("jpg.store"));
+        assert_eq!(uses[0].addresses().count(), 2);
     }
 
     #[test]

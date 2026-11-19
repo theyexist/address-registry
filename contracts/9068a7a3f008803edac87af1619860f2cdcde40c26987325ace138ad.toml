@@ -1,11 +1,29 @@
-# jpg.store V1 sale escrow. The label is the compiled table's own rendering,
+# jpg.store V1. The label is the compiled table's own rendering,
 # `"{marketplace} {purpose}"`.
+#
+# ONE SCRIPT, TWO USES. The sale escrow (`addr1z…`) and the collection-offer
+# contract (`addr1x…`) share this payment credential under two delegation forms,
+# and the old registry recorded them in two tables that disagreed about the
+# category because each saw one form. Both are true: the form is what tells them
+# apart, which is why each use names its own address.
 credential = "9068a7a3f008803edac87af1619860f2cdcde40c26987325ace138ad"
 
 [[use]]
 category = "marketplace"
+purpose = "sale"
+market = "jpg.store"
 label = "JPG.store Sale"
 source = "shared-crates/address-registry, PAYMENT_CREDENTIAL_REGISTRY (JPG.store, Sale, V1)"
 
 [use.derived_from]
 address = "addr1zxgx3far7qygq0k6epa0zcvcvrevmn0ypsnfsue94nsn3tvpw288a4x0xf8pxgcntelxmyclq83s0ykeehchz2wtspks905plm"
+
+[[use]]
+category = "marketplace"
+purpose = "offer"
+market = "jpg.store"
+label = "JPG.store Offer"
+source = "shared-crates/address-registry, ADDRESS_REGISTRY: the collection-offer escrow, the same script as the V1 sale under another delegation form"
+
+[use.derived_from]
+address = "addr1xxgx3far7qygq0k6epa0zcvcvrevmn0ypsnfsue94nsn3tfvjel5h55fgjcxgchp830r7h2l5msrlpt8262r3nvr8eks2utwdd"

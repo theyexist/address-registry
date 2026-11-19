@@ -1,0 +1,6 @@
+# JPG.store's MINTER — a different contract from the escrows above and so a
+# different credential. One payment script, no other label reaches it.
+stake = "stake17yvew80mg6nl5cgama29a6zd40t5z32vfqmkd80gxgkhrqgy48g8s"
+label = "JPG.store"
+kind = "marketplace"
+source = "delegation part of the registered JPG.store minter address; reached by exactly one payment script and no other registered label"

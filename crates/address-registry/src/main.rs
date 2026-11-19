@@ -15,7 +15,9 @@
 mod clock;
 mod contract;
 mod error;
+mod files;
 mod resolve;
+mod stakes;
 mod upstream;
 mod validate;
 
@@ -37,12 +39,15 @@ usage: address-registry <command>
   import   --strica <dir> --eternl <dir> [--out imported]
            fold the two public registries into one index of claims
 
-  resolve  [--imported imported/registry.json] [--contracts contracts] [--out resolved]
-           overlay the authored contracts onto the imported claims
+  resolve  [--imported imported/registry.json] [--contracts contracts]
+           [--stakes stakes] [--stake-exclusions stake-exclusions] [--out resolved]
+           overlay the authored contracts onto the imported claims, and resolve
+           the stake-service table
 
-  validate [--contracts contracts] [<file>...]
-           check contract files against the schema, and that no two declare one
-           credential; with no files, check every file in the directory
+  validate [--contracts contracts] [--stakes stakes]
+           [--stake-exclusions stake-exclusions] [<file>...]
+           check authored files against the schema, and that no two declare one
+           key; with no files, check every file in each directory
 
 Nothing is fetched and nothing is resolved behind your back: a credential two
 projects claim is recorded as a conflict for a human, never silently picked.";
@@ -62,10 +67,14 @@ enum Command {
     Resolve {
         imported: PathBuf,
         contracts: PathBuf,
+        stakes: PathBuf,
+        stake_exclusions: PathBuf,
         out: PathBuf,
     },
     Validate {
         contracts: PathBuf,
+        stakes: PathBuf,
+        stake_exclusions: PathBuf,
         files: Vec<PathBuf>,
     },
 }
@@ -91,9 +100,16 @@ fn run() -> Result<()> {
         Command::Resolve {
             imported,
             contracts,
+            stakes,
+            stake_exclusions,
             out,
-        } => resolve::run(&imported, &contracts, &out),
-        Command::Validate { contracts, files } => validate::run(&contracts, &files),
+        } => resolve::run(&imported, &contracts, &stakes, &stake_exclusions, &out),
+        Command::Validate {
+            contracts,
+            stakes,
+            stake_exclusions,
+            files,
+        } => validate::run(&contracts, &stakes, &stake_exclusions, &files),
     }
 }
 
@@ -280,11 +296,17 @@ fn parse_import(rest: &mut impl Iterator<Item = String>) -> Result<Option<Comman
 fn parse_resolve(rest: &mut impl Iterator<Item = String>) -> Result<Option<Command>> {
     let mut imported = PathBuf::from("imported/registry.json");
     let mut contracts = PathBuf::from("contracts");
+    let mut stakes = PathBuf::from("stakes");
+    let mut stake_exclusions = PathBuf::from("stake-exclusions");
     let mut out = PathBuf::from("resolved");
     while let Some(argument) = rest.next() {
         match argument.as_str() {
             "--imported" => imported = PathBuf::from(value(rest, "--imported")?),
             "--contracts" => contracts = PathBuf::from(value(rest, "--contracts")?),
+            "--stakes" => stakes = PathBuf::from(value(rest, "--stakes")?),
+            "--stake-exclusions" => {
+                stake_exclusions = PathBuf::from(value(rest, "--stake-exclusions")?)
+            }
             "--out" => out = PathBuf::from(value(rest, "--out")?),
             "--help" | "-h" => return Ok(None),
             other => return Err(Error::new(format!("unknown argument: {other}"))),
@@ -293,16 +315,24 @@ fn parse_resolve(rest: &mut impl Iterator<Item = String>) -> Result<Option<Comma
     Ok(Some(Command::Resolve {
         imported,
         contracts,
+        stakes,
+        stake_exclusions,
         out,
     }))
 }
 
 fn parse_validate(rest: &mut impl Iterator<Item = String>) -> Result<Option<Command>> {
     let mut contracts = PathBuf::from("contracts");
+    let mut stakes = PathBuf::from("stakes");
+    let mut stake_exclusions = PathBuf::from("stake-exclusions");
     let mut files = Vec::new();
     while let Some(argument) = rest.next() {
         match argument.as_str() {
             "--contracts" => contracts = PathBuf::from(value(rest, "--contracts")?),
+            "--stakes" => stakes = PathBuf::from(value(rest, "--stakes")?),
+            "--stake-exclusions" => {
+                stake_exclusions = PathBuf::from(value(rest, "--stake-exclusions")?)
+            }
             "--help" | "-h" => return Ok(None),
             other if other.starts_with('-') => {
                 return Err(Error::new(format!("unknown argument: {other}")))
@@ -310,7 +340,12 @@ fn parse_validate(rest: &mut impl Iterator<Item = String>) -> Result<Option<Comm
             path => files.push(PathBuf::from(path)),
         }
     }
-    Ok(Some(Command::Validate { contracts, files }))
+    Ok(Some(Command::Validate {
+        contracts,
+        stakes,
+        stake_exclusions,
+        files,
+    }))
 }
 
 fn value(rest: &mut impl Iterator<Item = String>, flag: &str) -> Result<String> {
