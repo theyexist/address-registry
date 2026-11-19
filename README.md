@@ -109,6 +109,23 @@ The tool writes:
   `report.json` under `observations.eternl_script_index`, and none of it is
   imported.
 
+## Checks
+
+CI runs the commands a contributor should:
+
+```sh
+nix build .#                                  # the package installs
+nix flake check                               # the suite, plus the binary's usage line
+nix develop -c cargo fmt --all --check
+nix develop -c cargo clippy --workspace --all-targets -- -D warnings
+```
+
+`nix flake check` runs the suite, which **regenerates the artefacts in a
+temporary directory and compares them with the committed ones**. A `contracts/`
+edit that was not followed by a `resolve` therefore fails CI rather than drifting
+into the repository, and a `format` bump that was not regenerated fails the same
+way. Lint runs through the devshell, so CI and a contributor use one toolchain.
+
 ## Using it from another repo
 
 Two different things, and keeping them apart is the point:

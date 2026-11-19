@@ -125,11 +125,13 @@ fn resolve_reproduces_the_artefact_from_the_committed_inputs() {
     let fresh: Resolved = read(&out.join("registry.json"));
     let committed: Resolved = read(&repo().join("resolved/registry.json"));
 
+    // Everything except `generated_at`, which is the one field that must differ.
+    // Comparing the claims too is the point: a `contracts/` edit without a
+    // `resolve` has to fail here rather than drift into the repository.
     assert_eq!(fresh.format, committed.format);
-    assert_eq!(fresh.sources.strica.rev, committed.sources.strica.rev);
-    assert_eq!(fresh.sources.eternl.rev, committed.sources.eternl.rev);
+    assert_eq!(fresh.sources, committed.sources);
     assert_eq!(fresh.authored, committed.authored);
-    assert_eq!(fresh.credentials.len(), committed.credentials.len());
+    assert_eq!(fresh.credentials, committed.credentials);
 
     // The counts are checked against the artefact rather than against literals:
     // the registry grows, and a number that has to be edited on every port is a

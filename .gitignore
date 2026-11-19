@@ -2,5 +2,6 @@
 vendor/
 
 /target
+/result
 .direnv
 .DS_Store
