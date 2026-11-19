@@ -3,6 +3,9 @@
 A machine-readable registry of Cardano scripts, keyed by payment credential —
 what a contract is, what it does with what it holds, and who says so.
 
+The governance, the evidence standard, the dispute path and the licence are in
+[`CHARTER.md`](CHARTER.md).
+
 ## Two layers
 
 | layer | path | written by | regenerated |
@@ -49,7 +52,7 @@ address = "addr1w8r6kmlsm7gfwnaqrlxhjufnv7gjqlz82vj0rv5gukqguhcs9tj6j"
 - Unknown keys are an error, not a silent drop.
 
 ```sh
-cargo run -- resolve
+cargo run -p address-registry -- resolve
 ```
 
 `resolve` reads `imported/registry.json` and `contracts/`, and writes
@@ -67,7 +70,7 @@ import is reproducible from the revisions in `imported/registry.json`.
 git clone --depth 1 https://github.com/StricaHQ/cardano-contracts-registry vendor/strica
 git clone --depth 1 https://github.com/Tastenkunst/eternl-cardano-registry vendor/eternl
 
-cargo run -- import --strica vendor/strica --eternl vendor/eternl
+cargo run -p address-registry -- import --strica vendor/strica --eternl vendor/eternl
 ```
 
 The tool writes:
@@ -98,18 +101,43 @@ Two different things, and keeping them apart is the point:
 | you want | depend on | changes when |
 | --- | --- | --- |
 | the shape of the files | `address-registry-schema` (this repo) | a field, kind or shape is added |
-| the registry itself | `resolved/registry.json` (hosted) | a contract is added or renamed |
+| the registry itself | a published object (see below) | a contract is added or renamed |
+
+There are three artefacts, because consumers ask different questions:
+
+| you need | fetch | today |
+| --- | --- | --- |
+| a classification | `resolved/behaviour.bin` | 459 B (395 gzipped) |
+| every field as text | `resolved/behaviour.json` | 1,074 B (511 gzipped) |
+| that, plus who else names them | `resolved/registry.json` | 423 KB (55 KB gzipped) |
+
+The first two are the curated rows and nothing else. A consumer holding five
+credentials resolves all five from them; it does not pay for 825 imported claims
+it will never look at. The claims are the bulk of the third file and are almost
+always the wrong question.
+
+`behaviour.bin` is the one shaped for lookup: a magic and format header, then
+`count × 36` fixed-width index records sorted by credential, then the strings. An
+index record is the 28-byte credential, the record's absolute offset, its length,
+and a `kind` and `shape` code — so a reader that only classifies fetches 36 bytes,
+and one that wants the label fetches one more range. Ten microseconds of
+arithmetic replaces parsing a document, and the layout is specified in
+`crates/address-registry-schema/src/behaviour.rs` beside its encoder.
 
 The crate is the schema, not the data. `address-registry-schema` has no I/O, no
 network and one dependency (`serde`):
 
 ```rust
+// The targeted read.
+let behaviour: address_registry_schema::Behaviour = serde_json::from_str(&text)?;
+if let Some(contract) = behaviour.get(&credential) {
+    // contract.kind, .shape, .label, .project, .derived_from, .source
+}
+
+// The union, when the names matter too.
 let resolved: address_registry_schema::Resolved = serde_json::from_str(&text)?;
 if resolved.format != address_registry_schema::FORMAT {
     // a file from a newer schema than this build understands
-}
-if let Some(behaviour) = resolved.behaviour(&credential) {
-    // behaviour.kind, .shape, .label, .project, .derived_from, .source
 }
 let names = resolved.claims(&credential); // empty when nobody upstream claims it
 ```
@@ -120,8 +148,48 @@ adding a contract to the registry no longer needs a rev bump anywhere. Adding a
 not know rather than reading a registry it only half understands. The same rule
 is what makes a typo in a `contracts/*.toml` an error instead of a silent drop.
 
+## Publication
+
+**Published from this repository.** The artefacts in `resolved/` are the
+published tree, `main` is the pointer, and a commit is the publish:
+
+```
+https://raw.githubusercontent.com/theyexist/address-registry/main/resolved/behaviour.bin
+https://raw.githubusercontent.com/theyexist/address-registry/main/resolved/behaviour.json
+https://raw.githubusercontent.com/theyexist/address-registry/main/resolved/registry.json
+```
+
+Pin an exact version by putting a commit before the path:
+`…/address-registry/<sha>/resolved/behaviour.bin`.
+
+Measured against these hosts on 2026-11-19:
+
+| host | `Range` | CORS | cache |
+| --- | --- | --- | --- |
+| `raw.githubusercontent.com` | yes — `206` with `content-range` | `*` | 300 s |
+| `cdn.jsdelivr.net` | no — a ranged request returned the whole body | `*` | 7 d / 12 h |
+
+Why a bucket is not needed yet: the objects are self-describing (`format` and
+`generated_at` are inside them), every published byte has a commit and a diff,
+and there is no credential to hold. What that costs: no SLA, up to five minutes
+of pointer lag (`?v=` did not bust the cache when measured), and the repository
+must stay public — a private one makes `raw` need auth and breaks anonymous
+consumers.
+
+R2 earns its keep when one of these becomes true: a guaranteed SLA, an instant
+pointer flip, a custom domain or response headers, a volume story GitHub should
+not be carrying, or a consumer doing large-index range reads. None is true at
+423 KB, and `raw` already answers range requests, so the binary works where it
+is. When that changes the same artefacts go to `<prefix>/latest.json` plus
+digest-named immutable objects, the pointer is written last, and the publisher
+gains a `--run`-gated upload step; no file shape changes.
+
+One property to keep in mind either way: the index is 36 bytes a row, so a
+full-index read costs 36 × rows — 36 KB at a thousand curated rows, 360 KB at
+ten thousand. Past ~100 KB of index (about 2,800 rows), shard to
+`behaviour/<first byte>.bin`. Below that, one small fetch beats the bookkeeping.
+
 ## Status
 
-The import layer and the authored layer are in place. The published artefact
-(`registry-vN.bin` + manifest, digest-pinned) follows, and the charter records
-the governance and licence.
+The import layer, the authored layer, the resolved artefacts and the charter are
+in place, and the artefacts are published by being committed.

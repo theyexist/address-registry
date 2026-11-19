@@ -9,7 +9,8 @@ use crate::contract;
 use crate::error::{Error, Result};
 use crate::write_json;
 use address_registry_schema::{
-    AuthoredRow, DerivedFrom, DerivedFromStatus, Imported, ResolveCounts, ResolveReport, Resolved,
+    AuthoredRow, Behaviour, DerivedFrom, DerivedFromStatus, Imported, ResolveCounts, ResolveReport,
+    Resolved,
 };
 use std::fs;
 use std::path::Path;
@@ -62,6 +63,13 @@ pub fn run(imported_path: &Path, contracts_dir: &Path, out: &Path) -> Result<()>
 
     let authored = contracts.len();
     let generated_at = crate::clock::now();
+    // The two artefacts are written from the same pass so they cannot disagree.
+    // `behaviour.json` is the targeted read: the curated rows only.
+    let behaviour = Behaviour {
+        format: address_registry_schema::FORMAT,
+        generated_at: generated_at.clone(),
+        contracts: contracts.clone(),
+    };
     let resolved = Resolved {
         format: address_registry_schema::FORMAT,
         generated_at: generated_at.clone(),
@@ -84,9 +92,17 @@ pub fn run(imported_path: &Path, contracts_dir: &Path, out: &Path) -> Result<()>
     };
 
     let registry_path = out.join("registry.json");
+    let behaviour_path = out.join("behaviour.json");
+    let behaviour_bin_path = out.join("behaviour.bin");
     let report_path = out.join("report.json");
     fs::create_dir_all(out).map_err(|error| Error::at(out, error))?;
     write_json(&registry_path, &resolved)?;
+    write_json(&behaviour_path, &behaviour)?;
+    let behaviour_bytes = behaviour
+        .to_bytes()
+        .map_err(|error| Error::new(error.to_string()))?;
+    fs::write(&behaviour_bin_path, behaviour_bytes)
+        .map_err(|error| Error::at(&behaviour_bin_path, error))?;
     write_json(&report_path, &report)?;
 
     println!("credentials  {}", report.counts.credentials);
@@ -100,5 +116,7 @@ pub fn run(imported_path: &Path, contracts_dir: &Path, out: &Path) -> Result<()>
         report.counts.derived_from_verified, report.counts.derived_from_attested
     );
     println!("wrote        {}", registry_path.display());
+    println!("             {}", behaviour_path.display());
+    println!("             {}", behaviour_bin_path.display());
     Ok(())
 }

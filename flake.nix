@@ -75,9 +75,13 @@
         rustPlatform:
         rustPlatform.buildRustPackage {
           pname = "address-registry";
-          version = (lib.importTOML ./Cargo.toml).package.version;
+          version = (lib.importTOML ./crates/address-registry/Cargo.toml).package.version;
           src = source;
           cargoLock.lockFile = ./Cargo.lock;
+          cargoBuildFlags = [
+            "-p"
+            "address-registry"
+          ];
         };
     in
     {
@@ -123,7 +127,7 @@
           # to resolve from up front.
           tests = rustPlatform.buildRustPackage {
             pname = "address-registry-tests";
-            version = (lib.importTOML ./Cargo.toml).package.version;
+            version = (lib.importTOML ./crates/address-registry/Cargo.toml).package.version;
             src = source;
             cargoLock.lockFile = ./Cargo.lock;
             buildPhase = "cargo build --workspace --offline";

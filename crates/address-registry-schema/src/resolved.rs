@@ -1,8 +1,15 @@
 //! The resolved file: behaviour overlaid on the claims.
 //!
-//! This is the artefact a consumer reads. `authored` is what a script does;
-//! `credentials` is every name anybody gives it, with an empty list where nobody
-//! gives one — which is the normal case for the rows this registry exists for.
+//! Two artefacts come out of the same authoring pass, because two consumers ask
+//! different questions:
+//!
+//!   `Behaviour`  what a script does, by credential — small, and all a consumer
+//!                holding a handful of credentials needs
+//!   `Resolved`   the union: behaviour plus every name anybody gives it, for a
+//!                reader that wants both
+//!
+//! Fetching the union to answer five lookups is what makes it feel unwieldy:
+//! the claims are the bulk and are almost never the question.
 
 use crate::claim::Claim;
 use crate::contract::{Contract, Kind, Shape};
@@ -31,6 +38,24 @@ impl Resolved {
             .get(credential)
             .map(Vec::as_slice)
             .unwrap_or_default()
+    }
+}
+
+/// The authored layer alone: what a consumer with a few credentials fetches.
+///
+/// Costs the curated rows and nothing else, so it does not grow when an upstream
+/// adds a project. A credential with no behaviour is `None` here and is not an
+/// error — most of the chain is.
+#[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
+pub struct Behaviour {
+    pub format: u32,
+    pub generated_at: String,
+    pub contracts: BTreeMap<String, Contract>,
+}
+
+impl Behaviour {
+    pub fn get(&self, credential: &str) -> Option<&Contract> {
+        self.contracts.get(credential)
     }
 }
 

@@ -3,6 +3,7 @@ name = "address-registry-schema"
 version = "0.1.0"
 edition = "2021"
 publish = false
+license = "MIT OR Apache-2.0"
 description = "Wire types for the address registry: the schema, not the data"
 
 [dependencies]

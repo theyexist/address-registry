@@ -6,7 +6,7 @@
 //! no vendor directory.
 
 use address_registry_schema::{
-    DerivedFrom, DerivedFromStatus, Kind, ResolveReport, Resolved, Shape,
+    Behaviour, DerivedFrom, DerivedFromStatus, Kind, ResolveReport, Resolved, Shape,
 };
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -14,9 +14,17 @@ use std::process::Command;
 
 const TOOL_STAKING: &str = "b0ebdd68bd00f3a633c5097fe0243d69fb27abacd7f6959bec63c4c4";
 const TOOL_LOCK: &str = "c7ab6ff0df90974fa01fcd7971336791207c475324f1b288e5808e5f";
+/// Claimed upstream, with no authored behaviour — the common case.
+const UPSTREAM_ONLY: &str = "002059fc75b038a85b33ba4fdfaced4bed1247fbad24c538dd45245a";
 
-fn repo() -> &'static Path {
+fn repo() -> PathBuf {
+    // The crate lives two levels below the repository root, which is where the
+    // committed import, contracts and resolved artefact are.
     Path::new(env!("CARGO_MANIFEST_DIR"))
+        .ancestors()
+        .nth(2)
+        .expect("the crate lives two levels below the repository root")
+        .to_path_buf()
 }
 
 fn read<T: serde::de::DeserializeOwned>(path: &Path) -> T {
@@ -52,6 +60,45 @@ fn the_committed_artefact_reads_with_the_published_schema() {
     assert!(resolved.claims(TOOL_LOCK).is_empty());
     assert!(resolved.credentials.contains_key(TOOL_STAKING));
     assert!(resolved.credentials.contains_key(TOOL_LOCK));
+}
+
+#[test]
+fn the_behaviour_artefact_is_the_targeted_read() {
+    let behaviour: Behaviour = read(&repo().join("resolved/behaviour.json"));
+
+    assert_eq!(behaviour.format, address_registry_schema::FORMAT);
+    assert_eq!(behaviour.contracts.len(), 2);
+
+    let staking = behaviour
+        .get(TOOL_STAKING)
+        .expect("TOOL staking is authored");
+    assert_eq!(staking.kind, Kind::Staking);
+    let lock = behaviour.get(TOOL_LOCK).expect("TOOL lock is authored");
+    assert_eq!(lock.kind, Kind::Lock);
+
+    // A credential only an upstream claims is absent, not an error. This is the
+    // lookup a consumer with a handful of addresses makes, and it costs the
+    // curated rows rather than the 825 imported ones.
+    assert!(behaviour.get(UPSTREAM_ONLY).is_none());
+}
+
+#[test]
+fn the_binary_table_decodes_to_the_same_rows_as_the_json() {
+    let behaviour: Behaviour = read(&repo().join("resolved/behaviour.json"));
+    let bytes = fs::read(repo().join("resolved/behaviour.bin")).expect("behaviour.bin is written");
+    let decoded = Behaviour::from_bytes(&bytes).expect("the binary decodes");
+
+    assert_eq!(decoded.generated_at, behaviour.generated_at);
+    assert_eq!(decoded.contracts, behaviour.contracts);
+
+    let json = fs::metadata(repo().join("resolved/behaviour.json"))
+        .expect("the JSON exists")
+        .len() as usize;
+    assert!(
+        bytes.len() < json,
+        "the binary ({} B) is not smaller than the JSON ({json} B)",
+        bytes.len()
+    );
 }
 
 #[test]
@@ -92,6 +139,18 @@ fn resolve_reproduces_the_artefact_from_the_committed_inputs() {
     assert_eq!(report.counts.authored_only, 2);
     assert_eq!(report.counts.derived_from_verified, 1);
     assert_eq!(report.counts.derived_from_attested, 1);
+
+    let fresh_behaviour: Behaviour = read(&out.join("behaviour.json"));
+    let committed_behaviour: Behaviour = read(&repo().join("resolved/behaviour.json"));
+    assert_eq!(fresh_behaviour.contracts, committed_behaviour.contracts);
+
+    let fresh_bytes = fs::read(out.join("behaviour.bin")).expect("the binary is written");
+    assert_eq!(
+        Behaviour::from_bytes(&fresh_bytes)
+            .expect("the binary decodes")
+            .contracts,
+        committed_behaviour.contracts
+    );
 
     let staking = report
         .authored

@@ -14,18 +14,22 @@
 //! this crate only decides whether they are a registry.
 
 pub mod bech32;
+pub mod behaviour;
 mod claim;
 mod contract;
 mod report;
 mod resolved;
 
+pub use behaviour::BehaviourError;
 pub use claim::{credential, Audit, Claim, EternlClaim, Source, StricaClaim};
 pub use contract::{Contract, DerivedFrom, Invalid, Kind, Shape};
 pub use report::{
     Conflict, ConflictClaim, ImportCounts, ImportReport, Imported, IndexObservation, Observations,
     Skipped, SourceRef, Sources,
 };
-pub use resolved::{AuthoredRow, DerivedFromStatus, ResolveCounts, ResolveReport, Resolved};
+pub use resolved::{
+    AuthoredRow, Behaviour, DerivedFromStatus, ResolveCounts, ResolveReport, Resolved,
+};
 
 /// The file format this crate reads and writes.
 pub const FORMAT: u32 = 1;
