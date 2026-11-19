@@ -15,13 +15,13 @@ pub struct Imported {
     pub credentials: BTreeMap<String, Vec<Claim>>,
 }
 
-#[derive(Clone, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct Sources {
     pub strica: SourceRef,
     pub eternl: SourceRef,
 }
 
-#[derive(Clone, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct SourceRef {
     pub repo: String,
     pub rev: Option<String>,

@@ -147,13 +147,13 @@ fn import(strica_dir: &Path, eternl_dir: &Path, out: &Path) -> Result<()> {
     };
 
     let imported = Imported {
-        format: address_registry_schema::FORMAT,
+        format: address_registry_schema::IMPORT_FORMAT,
         generated_at: generated_at.clone(),
         sources: sources.clone(),
         credentials: by_credential,
     };
     let report = ImportReport {
-        format: address_registry_schema::FORMAT,
+        format: address_registry_schema::IMPORT_FORMAT,
         generated_at,
         sources,
         counts: ImportCounts {

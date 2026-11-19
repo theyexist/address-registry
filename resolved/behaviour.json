@@ -1,28 +1,30 @@
 {
-  "format": 1,
-  "generated_at": "2026-11-19T02:52:29.747Z",
+  "format": 2,
+  "generated_at": "2026-11-19T04:10:59.985Z",
   "contracts": {
-    "b0ebdd68bd00f3a633c5097fe0243d69fb27abacd7f6959bec63c4c4": {
-      "credential": "b0ebdd68bd00f3a633c5097fe0243d69fb27abacd7f6959bec63c4c4",
-      "kind": "staking",
-      "shape": "owner_only",
-      "label": "TSURU Staking",
-      "project": "TSURU",
-      "source": "token-ledger walk 2026-11-19: datum Constr 0 [Bytes(owner_pkh)] and no deadline",
-      "derived_from": {
-        "attested": "no address registered: the stake part of a base address is not determined by its payment credential"
+    "b0ebdd68bd00f3a633c5097fe0243d69fb27abacd7f6959bec63c4c4": [
+      {
+        "category": "staking",
+        "shape": "owner_only",
+        "label": "TSURU Staking",
+        "project": "TSURU",
+        "source": "token-ledger walk 2026-11-19: datum Constr 0 [Bytes(owner_pkh)] and no deadline",
+        "derived_from": {
+          "attested": "no address registered: the stake part of a base address is not determined by its payment credential"
+        }
       }
-    },
-    "c7ab6ff0df90974fa01fcd7971336791207c475324f1b288e5808e5f": {
-      "credential": "c7ab6ff0df90974fa01fcd7971336791207c475324f1b288e5808e5f",
-      "kind": "lock",
-      "shape": "deadline_and_owner",
-      "label": "TSURU Lock",
-      "project": "TSURU",
-      "source": "token-ledger walk 2026-11-19: datum Constr 0 [Int(ms), Bytes(owner_pkh)]",
-      "derived_from": {
-        "address": "addr1w8r6kmlsm7gfwnaqrlxhjufnv7gjqlz82vj0rv5gukqguhcs9tj6j"
+    ],
+    "c7ab6ff0df90974fa01fcd7971336791207c475324f1b288e5808e5f": [
+      {
+        "category": "lock",
+        "shape": "deadline_and_owner",
+        "label": "TSURU Lock",
+        "project": "TSURU",
+        "source": "token-ledger walk 2026-11-19: datum Constr 0 [Int(ms), Bytes(owner_pkh)]",
+        "derived_from": {
+          "address": "addr1w8r6kmlsm7gfwnaqrlxhjufnv7gjqlz82vj0rv5gukqguhcs9tj6j"
+        }
       }
-    }
+    ]
   }
 }

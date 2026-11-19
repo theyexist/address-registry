@@ -68,16 +68,17 @@ second-class; they are unverified, and the report says so.
 
 ## Stewardship
 
-`theyexist` holds the repository, the publish path and the maintainer list.
+`theyexist` is the steward: it holds the repository and the publish path, and
+appoints the maintainers.
 
 The steward does not own the data, cannot relicense it, and does not settle a
 dispute by assertion — it confirms that the process below was followed.
 
 ## Maintainers
 
-Listed in [`MAINTAINERS.md`](MAINTAINERS.md). A maintainer may merge an authored
-row that meets the evidence standard, and may withdraw one under the dispute
-process.
+Maintainers are individuals, listed in [`MAINTAINERS.md`](MAINTAINERS.md) and
+appointed by the steward. A maintainer may merge an authored row that meets the
+evidence standard, and may accept or withdraw one under the dispute process.
 
 ## Disputes
 
@@ -85,21 +86,36 @@ Anyone may dispute an authored row by opening an issue with evidence. This is th
 part of the charter that matters most: a registry is only worth what it does when
 it is wrong.
 
-1. The dispute is recorded in [`disputes/<credential>.md`](disputes/README.md) —
-   what was claimed, on what evidence, what is said against it, and the dates.
-2. A maintainer who did not author the row triages it.
-3. **Silence favours Unknown.** If a dispute is not resolved within 30 days, the
-   row is withdrawn: `contracts/<credential>.toml` leaves the tree, and the
-   credential becomes unknown to the registry.
+1. A maintainer who did not author the row triages the issue. If the evidence is
+   self-evident — the datum does not decode, the address does not match — the row
+   is withdrawn immediately, and the dispute file records why.
+2. Otherwise the dispute is **accepted** and recorded in
+   [`disputes/<credential>.md`](disputes/README.md): what was claimed, on what
+   evidence, what is said against it, and the dates. An issue closed as unfounded
+   leaves no dispute file, because there is nothing to withdraw.
+3. **Silence favours Unknown.** From the date a dispute is accepted, whoever
+   stands behind the use has 30 days to answer with evidence. If nobody does, the
+   use is withdrawn: its `[[use]]` leaves `contracts/<credential>.toml` in a pull
+   request that also closes the dispute file as `withdrawn` — and the file goes
+   with it when that was the credential's only use. Withdrawing one use never
+   withdraws another.
 4. **Withdrawal does not delete the claim.** The dispute file keeps the row as it
    stood, including its `source`, so what was asserted and on what grounds stays
    auditable.
-5. Resolved in favour → the row returns, with the new evidence added to its
-   `source`. Resolved against → the dispute record is the reason it is absent.
+5. Answered → a maintainer decides, and records `upheld` or `withdrawn`. An
+   `upheld` row returns with the new evidence added to its `source`; a withdrawn
+   one stays absent, and the dispute file is the reason.
+
+The clock starts when a dispute is accepted, not when an issue is opened:
+otherwise anyone could erase a correct row by filing an issue and waiting.
+Silence means silence from the row's side, not from the maintainers.
+
+Withdrawal is neither a punishment nor permanent. Re-adding the row with evidence
+is an ordinary pull request.
 
 Unknown is represented by **absence, not by a value**: `Behaviour::get` returns
-`None`. A consumer that sees `None` must not read that as "safe" — only as
-"nobody has stated what this is". A consumer that needs the reason reads
+an empty slice. A consumer that sees no uses must not read that as "safe" — only
+as "nobody has stated what this is". A consumer that needs the reason reads
 `disputes/`.
 
 Disputes apply to the authored layer. An imported claim is its upstream's

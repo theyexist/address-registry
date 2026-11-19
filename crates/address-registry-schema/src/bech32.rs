@@ -1,13 +1,9 @@
-//! Just enough bech32 to check a credential against the address it came from.
+//! Decoding a bech32 string to its payload bytes.
 //!
-//! `shared-crates/address-registry` carried a test that decoded `derived_from`
-//! and compared the payment credential, because a mistyped hex character names
-//! an address that exists and is not the one meant. Doing the same check when a
-//! row is authored moves that failure to the person who can fix it.
-//!
-//! Cardano addresses are bech32 (BIP-173), never bech32m. For every Shelley
-//! address type the payment credential is payload bytes 1..29: the header byte
-//! says what the rest is.
+//! Cardano addresses are bech32 (BIP-173), never bech32m. This module stops at
+//! the bytes: what they mean depends on the header, which is
+//! [`crate::address`]'s job. Splitting it there is what stops a reward address
+//! being read as though its stake credential were a payment one.
 
 const CHARSET: &[u8; 32] = b"qpzry9x8gf2tvdw0s3jn54khce6mua7l";
 const GENERATOR: [u32; 5] = [
@@ -18,8 +14,8 @@ const GENERATOR: [u32; 5] = [
     0x2a14_62b3,
 ];
 
-/// The 56-hex payment credential an address pays to, if it decodes.
-pub fn payment_credential(address: &str) -> Option<String> {
+/// The payload an address encodes, if it decodes at all.
+pub fn payload(address: &str) -> Option<Vec<u8>> {
     let has_upper = address.bytes().any(|byte| byte.is_ascii_uppercase());
     let has_lower = address.bytes().any(|byte| byte.is_ascii_lowercase());
     if has_upper && has_lower {
@@ -36,9 +32,7 @@ pub fn payment_credential(address: &str) -> Option<String> {
     if polymod(&checked) != 1 {
         return None;
     }
-    let payload = from_five_bits(&values[..values.len() - 6])?;
-    let credential = payload.get(1..29)?;
-    Some(hex(credential))
+    from_five_bits(&values[..values.len() - 6])
 }
 
 fn polymod(values: &[u8]) -> u32 {
@@ -93,41 +87,32 @@ fn from_five_bits(values: &[u8]) -> Option<Vec<u8>> {
     Some(bytes)
 }
 
-fn hex(bytes: &[u8]) -> String {
-    bytes.iter().map(|byte| format!("{byte:02x}")).collect()
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
-    fn decodes_a_script_enterprise_address() {
-        // The TOOL lock, paired with its credential in the Koios fixture the
-        // holder walk runs against.
-        assert_eq!(
-            payment_credential("addr1w8r6kmlsm7gfwnaqrlxhjufnv7gjqlz82vj0rv5gukqguhcs9tj6j")
-                .as_deref(),
-            Some("c7ab6ff0df90974fa01fcd7971336791207c475324f1b288e5808e5f")
-        );
+    fn a_script_enterprise_address_decodes_to_29_bytes() {
+        let payload =
+            payload("addr1w8r6kmlsm7gfwnaqrlxhjufnv7gjqlz82vj0rv5gukqguhcs9tj6j").expect("decodes");
+        assert_eq!(payload.len(), 29);
+        // Type 7 (script enterprise), network 1 (mainnet).
+        assert_eq!(payload[0], 0x71);
     }
 
     #[test]
-    fn decodes_a_base_address_past_its_stake_part() {
-        // CrowdLock, from the same fixture set: header, payment script, stake key.
-        assert_eq!(
-            payment_credential(
-                "addr1zyupekdkyr8f6lrnm4zulcs8juwv080hjfgsqvgkp98kkdhym9auk0rgpz3lurkryvhl55046ak6ex4tlyj6mxxj735syr937w"
-            )
-            .as_deref(),
-            Some("381cd9b620ce9d7c73dd45cfe207971cc79df79251003116094f6b36")
-        );
+    fn a_base_address_decodes_to_57_bytes() {
+        let payload = payload(
+            "addr1zyupekdkyr8f6lrnm4zulcs8juwv080hjfgsqvgkp98kkdhym9auk0rgpz3lurkryvhl55046ak6ex4tlyj6mxxj735syr937w",
+        )
+        .expect("decodes");
+        assert_eq!(payload.len(), 57);
     }
 
     #[test]
     fn a_corrupted_checksum_is_rejected() {
         assert_eq!(
-            payment_credential("addr1w8r6kmlsm7gfwnaqrlxhjufnv7gjqlz82vj0rv5gukqguhcs9tj6k"),
+            payload("addr1w8r6kmlsm7gfwnaqrlxhjufnv7gjqlz82vj0rv5gukqguhcs9tj6k"),
             None
         );
     }
@@ -135,7 +120,7 @@ mod tests {
     #[test]
     fn a_credential_is_not_an_address() {
         assert_eq!(
-            payment_credential("c7ab6ff0df90974fa01fcd7971336791207c475324f1b288e5808e5f"),
+            payload("c7ab6ff0df90974fa01fcd7971336791207c475324f1b288e5808e5f"),
             None
         );
     }

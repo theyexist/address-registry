@@ -6,7 +6,7 @@
 //! no vendor directory.
 
 use address_registry_schema::{
-    Behaviour, DerivedFrom, DerivedFromStatus, Kind, ResolveReport, Resolved, Shape,
+    Behaviour, Category, DerivedFrom, DerivedFromStatus, ResolveReport, Resolved, Shape,
 };
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -39,19 +39,19 @@ fn the_committed_artefact_reads_with_the_published_schema() {
 
     assert_eq!(resolved.format, address_registry_schema::FORMAT);
 
-    let staking = resolved
-        .behaviour(TOOL_STAKING)
-        .expect("TOOL staking is authored");
-    assert_eq!(staking.kind, Kind::Staking);
-    assert_eq!(staking.shape, Shape::OwnerOnly);
+    let staking = resolved.behaviour(TOOL_STAKING);
+    assert_eq!(staking.len(), 1);
+    let staking = staking.first().expect("TOOL staking is authored");
+    assert_eq!(staking.category, Category::Staking);
+    assert_eq!(staking.shape, Some(Shape::OwnerOnly));
     assert!(matches!(staking.derived_from, DerivedFrom::Attested(_)));
     assert!(!staking.source.trim().is_empty());
 
-    let lock = resolved
-        .behaviour(TOOL_LOCK)
-        .expect("TOOL lock is authored");
-    assert_eq!(lock.kind, Kind::Lock);
-    assert_eq!(lock.shape, Shape::DeadlineAndOwner);
+    let lock = resolved.behaviour(TOOL_LOCK);
+    assert_eq!(lock.len(), 1);
+    let lock = lock.first().expect("TOOL lock is authored");
+    assert_eq!(lock.category, Category::Lock);
+    assert_eq!(lock.shape, Some(Shape::DeadlineAndOwner));
     assert!(matches!(lock.derived_from, DerivedFrom::Address(_)));
 
     // Neither is claimed upstream, and both are still in `credentials` — that
@@ -67,19 +67,25 @@ fn the_behaviour_artefact_is_the_targeted_read() {
     let behaviour: Behaviour = read(&repo().join("resolved/behaviour.json"));
 
     assert_eq!(behaviour.format, address_registry_schema::FORMAT);
-    assert_eq!(behaviour.contracts.len(), 2);
 
-    let staking = behaviour
-        .get(TOOL_STAKING)
-        .expect("TOOL staking is authored");
-    assert_eq!(staking.kind, Kind::Staking);
-    let lock = behaviour.get(TOOL_LOCK).expect("TOOL lock is authored");
-    assert_eq!(lock.kind, Kind::Lock);
+    let staking = behaviour.get(TOOL_STAKING);
+    assert_eq!(staking.len(), 1);
+    assert_eq!(
+        staking.first().map(|use_of| use_of.category),
+        Some(Category::Staking)
+    );
+    assert_eq!(
+        behaviour
+            .get(TOOL_LOCK)
+            .first()
+            .map(|use_of| use_of.category),
+        Some(Category::Lock)
+    );
 
     // A credential only an upstream claims is absent, not an error. This is the
     // lookup a consumer with a handful of addresses makes, and it costs the
     // curated rows rather than the 825 imported ones.
-    assert!(behaviour.get(UPSTREAM_ONLY).is_none());
+    assert!(behaviour.get(UPSTREAM_ONLY).is_empty());
 }
 
 #[test]
@@ -122,41 +128,22 @@ fn resolve_reproduces_the_artefact_from_the_committed_inputs() {
     assert_eq!(fresh.format, committed.format);
     assert_eq!(fresh.sources.strica.rev, committed.sources.strica.rev);
     assert_eq!(fresh.sources.eternl.rev, committed.sources.eternl.rev);
-    assert_eq!(fresh.authored.len(), committed.authored.len());
+    assert_eq!(fresh.authored, committed.authored);
     assert_eq!(fresh.credentials.len(), committed.credentials.len());
-    for (credential, contract) in &committed.authored {
-        let fresh_contract = fresh
-            .behaviour(credential)
-            .unwrap_or_else(|| panic!("{credential} dropped by a fresh resolve"));
-        assert_eq!(fresh_contract.kind, contract.kind);
-        assert_eq!(fresh_contract.shape, contract.shape);
-        assert_eq!(fresh_contract.source, contract.source);
-        assert_eq!(fresh_contract.derived_from, contract.derived_from);
-    }
 
     let report: ResolveReport = read(&out.join("report.json"));
     assert_eq!(report.counts.authored, 2);
+    assert_eq!(report.counts.authored_credentials, 2);
     assert_eq!(report.counts.authored_only, 2);
     assert_eq!(report.counts.derived_from_verified, 1);
     assert_eq!(report.counts.derived_from_attested, 1);
-
-    let fresh_behaviour: Behaviour = read(&out.join("behaviour.json"));
-    let committed_behaviour: Behaviour = read(&repo().join("resolved/behaviour.json"));
-    assert_eq!(fresh_behaviour.contracts, committed_behaviour.contracts);
-
-    let fresh_bytes = fs::read(out.join("behaviour.bin")).expect("the binary is written");
-    assert_eq!(
-        Behaviour::from_bytes(&fresh_bytes)
-            .expect("the binary decodes")
-            .contracts,
-        committed_behaviour.contracts
-    );
 
     let staking = report
         .authored
         .iter()
         .find(|row| row.credential == TOOL_STAKING)
         .expect("the staking row is reported");
+    assert_eq!(staking.category, Category::Staking);
     assert_eq!(staking.derived_from, DerivedFromStatus::Attested);
 
     let lock = report
@@ -164,7 +151,16 @@ fn resolve_reproduces_the_artefact_from_the_committed_inputs() {
         .iter()
         .find(|row| row.credential == TOOL_LOCK)
         .expect("the lock row is reported");
+    assert_eq!(lock.category, Category::Lock);
     assert_eq!(lock.derived_from, DerivedFromStatus::Verified);
+
+    let fresh_bytes = fs::read(out.join("behaviour.bin")).expect("the binary is written");
+    assert_eq!(
+        Behaviour::from_bytes(&fresh_bytes)
+            .expect("the binary decodes")
+            .contracts,
+        committed.authored
+    );
 
     let _ = fs::remove_dir_all(&out);
 }

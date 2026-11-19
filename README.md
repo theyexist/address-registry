@@ -23,32 +23,47 @@ claims; it does not replace them.
 
 ## Authored
 
-A contract is one file, `contracts/<credential>.toml`, named after the
-credential it describes:
+One file per credential, `contracts/<credential>.toml`, named after the
+credential it describes. A file declares the credential once and carries one or
+more `[[use]]` tables, because one address can do more than one job:
 
 ```toml
 credential = "c7ab6ff0df90974fa01fcd7971336791207c475324f1b288e5808e5f"
-kind = "lock"
+
+[[use]]
+category = "lock"
 shape = "deadline_and_owner"
 label = "TSURU Lock"
 project = "TSURU"
 source = "token-ledger walk 2026-11-19: datum Constr 0 [Int(ms), Bytes(owner_pkh)]"
 
-[derived_from]
+[use.derived_from]
 address = "addr1w8r6kmlsm7gfwnaqrlxhjufnv7gjqlz82vj0rv5gukqguhcs9tj6j"
 ```
 
-- `kind` is what the script is (`lock`, `staking`); `shape` is how the datum
-  lays out its arguments (`owner_only`, `deadline_and_owner`). They are separate
-  because the same shape can carry a deadline or a stake date, and only the
-  `kind` says which.
+- `category` is what the thing is: `exchange`, `marketplace`, `launchpad`,
+  `burn`, `airdropper`, `minter`, `defi`, `staking`, `vesting`, `lock`, or
+  `wallet`. The first nine are the compiled table's names, so a consumer migrates
+  by rename; `lock` and `wallet` are the two it never had.
+- `shape` is optional and says how the datum lays out its arguments:
+  `owner_only`, `deadline_and_owner`, or `deadline_and_owners` for a list. It is
+  absent for anything that holds nothing under a datum — a `wallet`, which is a
+  key address an operator uses, or a script whose datum nobody has read yet.
+- `datum_example` is optional and needs a `shape`: a real datum observed at this
+  credential, as lowercase hex CBOR. The registry does not decode it, so it cannot
+  claim the bytes match the shape. What it can claim is where they came from, and
+  a consumer's decoder is what asserts they read as declared.
 - `source` is required and must not be empty. A behaviour with no provenance is
   a fabrication with a filename.
 - `derived_from` is either an `address` whose payment credential must decode to
   `credential`, or an `attested` reason why no address is registered. The first
   is decoded and compared when the file loads — a mistyped hex character fails
   the build rather than naming an address that exists. The second is counted in
-  the report, so an unverifiable row never looks like a checked one.
+  the report, so an unverifiable use never looks like a checked one.
+- A second `[[use]]` is how an overloaded address is described. The registry
+  lists the uses and never picks between them: only on-chain evidence can, at the
+  consumer — a datumless UTxO is the wallet use, a datum matching
+  `deadline_and_owner` is the lock use.
 - Unknown keys are an error, not a silent drop.
 
 ```sh
@@ -56,10 +71,10 @@ cargo run -p address-registry -- resolve
 ```
 
 `resolve` reads `imported/registry.json` and `contracts/`, and writes
-`resolved/registry.json` — the authored rows plus the union of every credential,
-with the imported claims beside them. A credential with an authored row and no
-upstream claim appears with an empty claim list; that gap is the reason the
-registry exists.
+`resolved/registry.json` (the union), `resolved/behaviour.json` and
+`resolved/behaviour.bin` (the curated rows only). A credential with an authored
+use and no upstream claim appears with an empty claim list; that gap is the reason
+the registry exists.
 
 ## Import
 
@@ -107,8 +122,8 @@ There are three artefacts, because consumers ask different questions:
 
 | you need | fetch | today |
 | --- | --- | --- |
-| a classification | `resolved/behaviour.bin` | 459 B (395 gzipped) |
-| every field as text | `resolved/behaviour.json` | 1,074 B (511 gzipped) |
+| a classification | `resolved/behaviour.bin` | 461 B (397 gzipped) |
+| every field as text | `resolved/behaviour.json` | 986 B (507 gzipped) |
 | that, plus who else names them | `resolved/registry.json` | 423 KB (55 KB gzipped) |
 
 The first two are the curated rows and nothing else. A consumer holding five
@@ -119,20 +134,26 @@ always the wrong question.
 `behaviour.bin` is the one shaped for lookup: a magic and format header, then
 `count × 36` fixed-width index records sorted by credential, then the strings. An
 index record is the 28-byte credential, the record's absolute offset, its length,
-and a `kind` and `shape` code — so a reader that only classifies fetches 36 bytes,
-and one that wants the label fetches one more range. Ten microseconds of
-arithmetic replaces parsing a document, and the layout is specified in
-`crates/address-registry-schema/src/behaviour.rs` beside its encoder.
+and a `category` and `shape` code — so a reader that only classifies fetches 36
+bytes, and one that wants the label fetches one more range. A credential with two
+uses has two adjacent records, so a lookup is a binary search and a scan of the
+run. The layout is specified in `crates/address-registry-schema/src/behaviour.rs`
+beside its encoder.
 
 The crate is the schema, not the data. `address-registry-schema` has no I/O, no
 network and one dependency (`serde`):
 
 ```rust
-// The targeted read.
+// The targeted read. `get` returns every use: empty when nobody has stated one.
 let behaviour: address_registry_schema::Behaviour = serde_json::from_str(&text)?;
-if let Some(contract) = behaviour.get(&credential) {
-    // contract.kind, .shape, .label, .project, .derived_from, .source
+for use_of in behaviour.get(&credential) {
+    // use_of.category, .shape, .label, .project, .derived_from, .source
 }
+
+// From an address, which is what a walk actually holds. A reward address is
+// refused by name: its credential sits where a payment one would and is a
+// different thing.
+let uses = behaviour.get_for_address("addr1…")?;
 
 // The union, when the names matter too.
 let resolved: address_registry_schema::Resolved = serde_json::from_str(&text)?;

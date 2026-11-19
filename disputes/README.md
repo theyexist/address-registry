@@ -4,9 +4,10 @@ One file per disputed credential, `disputes/<credential>.md`. It exists so that
 withdrawing a row never deletes what was claimed or why — the claim is withdrawn,
 not erased.
 
-The charter's rule: a dispute unresolved after 30 days withdraws the row, and the
-credential becomes Unknown. Withdrawal is this file plus the deletion of
-`contracts/<credential>.toml`, in the same pull request.
+The charter's rule: once a maintainer accepts a dispute, whoever stands behind
+the use has 30 days to answer it. If nobody does, the use is withdrawn: its
+`[[use]]` leaves `contracts/<credential>.toml`, and the file goes with it when
+that was the credential's only use. Withdrawing one use never withdraws another.
 
 ## Shape of a dispute file
 

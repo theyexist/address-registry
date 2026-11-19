@@ -13,6 +13,7 @@
 //! No I/O, no network, no filesystem. Reading the bytes is the consumer's job;
 //! this crate only decides whether they are a registry.
 
+pub mod address;
 pub mod bech32;
 pub mod behaviour;
 mod claim;
@@ -20,9 +21,10 @@ mod contract;
 mod report;
 mod resolved;
 
+pub use address::{AddressError, Network, Payment};
 pub use behaviour::BehaviourError;
 pub use claim::{credential, Audit, Claim, EternlClaim, Source, StricaClaim};
-pub use contract::{Contract, DerivedFrom, Invalid, Kind, Shape};
+pub use contract::{Category, Contract, ContractFile, DerivedFrom, Invalid, Shape};
 pub use report::{
     Conflict, ConflictClaim, ImportCounts, ImportReport, Imported, IndexObservation, Observations,
     Skipped, SourceRef, Sources,
@@ -31,5 +33,10 @@ pub use resolved::{
     AuthoredRow, Behaviour, DerivedFromStatus, ResolveCounts, ResolveReport, Resolved,
 };
 
-/// The file format this crate reads and writes.
-pub const FORMAT: u32 = 1;
+/// The import file's format. Unchanged when the authored layer changed shape:
+/// a consumer of `imported/registry.json` reads claims, and claims did not move.
+pub const IMPORT_FORMAT: u32 = 1;
+
+/// The format of `resolved/` and the behaviour artefacts. Bumped to 2 when a
+/// credential became a list of uses with an optional shape.
+pub const FORMAT: u32 = 2;
