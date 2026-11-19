@@ -1,84 +1,27 @@
-//! Overlay the authored layer onto the imported one.
+//! Overlay the authored layer onto the imported one, and write the artefact.
 //!
-//! The two layers answer different questions and stay separate in the file:
-//! `authored` is behaviour, `credentials` is every name anybody else gives a
-//! credential. A consumer reads the behaviour for a credential it already has;
-//! nothing here renames an upstream's claim or picks a winner between two.
-//!
-//! The union matters. A credential with an authored row and no upstream claim is
-//! the behavioural gap this registry exists to close, so it appears in
-//! `credentials` with an empty claim list rather than being left out.
+//! The shapes are `address-registry-schema`'s; this module is the part that
+//! reads and writes them. The two layers stay separate in the file: `authored`
+//! is behaviour, `credentials` is every name anybody else gives a credential.
+//! Nothing here renames an upstream's claim or picks a winner between two.
 
-use crate::claim::Claim;
-use crate::clock;
-use crate::contract::{self, Contract, DerivedFrom};
+use crate::contract;
 use crate::error::{Error, Result};
-use crate::output::Sources;
-use serde::{Deserialize, Serialize};
-use std::collections::BTreeMap;
+use crate::write_json;
+use address_registry_schema::{
+    AuthoredRow, DerivedFrom, DerivedFromStatus, Imported, ResolveCounts, ResolveReport, Resolved,
+};
 use std::fs;
 use std::path::Path;
 
-#[derive(Deserialize)]
-struct ImportedRegistry {
-    sources: Sources,
-    credentials: BTreeMap<String, Vec<Claim>>,
-}
-
-#[derive(Serialize)]
-struct ResolvedRegistry {
-    format: u32,
-    generated_at: String,
-    sources: Sources,
-    authored: BTreeMap<String, Contract>,
-    credentials: BTreeMap<String, Vec<Claim>>,
-}
-
-#[derive(Serialize)]
-struct ResolvedReport {
-    format: u32,
-    generated_at: String,
-    counts: Counts,
-    authored: Vec<AuthoredRow>,
-}
-
-#[derive(Serialize)]
-struct Counts {
-    credentials: usize,
-    authored: usize,
-    authored_with_upstream_claim: usize,
-    authored_only: usize,
-    derived_from_verified: usize,
-    derived_from_attested: usize,
-}
-
-#[derive(Serialize)]
-struct AuthoredRow {
-    credential: String,
-    kind: contract::Kind,
-    shape: contract::Shape,
-    label: String,
-    project: String,
-    upstream_claims: usize,
-    derived_from: DerivedFromStatus,
-}
-
-#[derive(Serialize)]
-#[serde(rename_all = "lowercase")]
-enum DerivedFromStatus {
-    /// A `derived_from.address` that decoded to this credential.
-    Verified,
-    /// No address registered; the reason is in the authored file.
-    Attested,
-}
-
-pub fn run(imported: &Path, contracts_dir: &Path, out: &Path) -> Result<()> {
-    let text = fs::read_to_string(imported).map_err(|error| Error::at(imported, error))?;
-    let imported_registry: ImportedRegistry =
-        serde_json::from_str(&text).map_err(|error| Error::at(imported, error))?;
+pub fn run(imported_path: &Path, contracts_dir: &Path, out: &Path) -> Result<()> {
+    let text =
+        fs::read_to_string(imported_path).map_err(|error| Error::at(imported_path, error))?;
+    let imported: Imported =
+        serde_json::from_str(&text).map_err(|error| Error::at(imported_path, error))?;
     let contracts = contract::load(contracts_dir)?;
 
-    let mut credentials = imported_registry.credentials;
+    let mut credentials = imported.credentials;
     let mut rows = Vec::new();
     let mut verified = 0;
     let mut attested = 0;
@@ -118,18 +61,18 @@ pub fn run(imported: &Path, contracts_dir: &Path, out: &Path) -> Result<()> {
     }
 
     let authored = contracts.len();
-    let generated_at = clock::now();
-    let resolved = ResolvedRegistry {
-        format: 1,
+    let generated_at = crate::clock::now();
+    let resolved = Resolved {
+        format: address_registry_schema::FORMAT,
         generated_at: generated_at.clone(),
-        sources: imported_registry.sources,
+        sources: imported.sources,
         authored: contracts,
         credentials,
     };
-    let report = ResolvedReport {
-        format: 1,
+    let report = ResolveReport {
+        format: address_registry_schema::FORMAT,
         generated_at,
-        counts: Counts {
+        counts: ResolveCounts {
             credentials: resolved.credentials.len(),
             authored,
             authored_with_upstream_claim: with_claim,
@@ -158,10 +101,4 @@ pub fn run(imported: &Path, contracts_dir: &Path, out: &Path) -> Result<()> {
     );
     println!("wrote        {}", registry_path.display());
     Ok(())
-}
-
-fn write_json<T: Serialize>(path: &Path, value: &T) -> Result<()> {
-    let mut text = serde_json::to_string_pretty(value)?;
-    text.push('\n');
-    fs::write(path, text).map_err(|error| Error::at(path, error))
 }

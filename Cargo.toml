@@ -5,7 +5,11 @@ edition = "2021"
 publish = false
 description = "A machine-readable registry of Cardano scripts, keyed by payment credential"
 
+[workspace]
+members = ["crates/address-registry-schema"]
+
 [dependencies]
+address-registry-schema = { path = "crates/address-registry-schema" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 toml = "0.8"

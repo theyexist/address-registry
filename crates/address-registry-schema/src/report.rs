@@ -1,15 +1,14 @@
-//! The two generated files, in the shape a consumer reads.
+//! The import file and its report: who says what a script is.
 //!
-//! Field order is the order it is written in, so a regenerated file diffs as
-//! values changing rather than keys moving. Credentials are a `BTreeMap` so the
-//! index is sorted by construction.
+//! Nothing here carries a behaviour. A claim names a project and a contract, and
+//! says which upstream said so; it never says what the script does.
 
 use crate::claim::{Claim, Source};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
-#[derive(Serialize)]
-pub struct Registry {
+#[derive(Deserialize, Serialize)]
+pub struct Imported {
     pub format: u32,
     pub generated_at: String,
     pub sources: Sources,
@@ -29,12 +28,12 @@ pub struct SourceRef {
     pub projects: usize,
 }
 
-#[derive(Serialize)]
-pub struct Report {
+#[derive(Deserialize, Serialize)]
+pub struct ImportReport {
     pub format: u32,
     pub generated_at: String,
     pub sources: Sources,
-    pub counts: Counts,
+    pub counts: ImportCounts,
     pub skipped: Vec<Skipped>,
     pub skipped_truncated: usize,
     pub conflicts: Vec<Conflict>,
@@ -42,8 +41,8 @@ pub struct Report {
     pub observations: Observations,
 }
 
-#[derive(Serialize)]
-pub struct Counts {
+#[derive(Deserialize, Serialize)]
+pub struct ImportCounts {
     pub credentials: usize,
     pub claims: usize,
     pub claimed_by_both_sources: usize,
@@ -52,7 +51,7 @@ pub struct Counts {
     pub eternl_scripts_dropped: usize,
 }
 
-#[derive(Serialize)]
+#[derive(Deserialize, Serialize)]
 pub struct Skipped {
     pub source: Source,
     pub file: String,
@@ -60,25 +59,25 @@ pub struct Skipped {
     pub reason: String,
 }
 
-#[derive(Serialize)]
+#[derive(Deserialize, Serialize)]
 pub struct Conflict {
     pub credential: String,
     pub claims: Vec<ConflictClaim>,
 }
 
-#[derive(Serialize)]
+#[derive(Deserialize, Serialize)]
 pub struct ConflictClaim {
     pub source: Source,
     pub project: String,
     pub contract: Option<String>,
 }
 
-#[derive(Serialize)]
+#[derive(Deserialize, Serialize)]
 pub struct Observations {
     pub eternl_script_index: Option<IndexObservation>,
 }
 
-#[derive(Serialize)]
+#[derive(Deserialize, Serialize)]
 pub struct IndexObservation {
     pub generated_at: Option<String>,
     pub scripts: usize,

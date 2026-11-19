@@ -8,20 +8,20 @@
 //! The imported layer never assigns a `kind` or a datum `shape`; nobody upstream
 //! carries them. The authored layer is where a behaviour is stated, and every
 //! row there names its source.
+//!
+//! The types live in `address-registry-schema`, which is what a consumer depends
+//! on. This binary is the part that reads and writes the files.
 
-mod bech32;
-mod claim;
 mod clock;
 mod contract;
 mod error;
-mod output;
 mod resolve;
 mod upstream;
 
-use crate::claim::Claim;
 use crate::error::{Error, Result};
-use crate::output::{
-    Conflict, ConflictClaim, Counts, Observations, Registry, Report, Skipped, SourceRef, Sources,
+use address_registry_schema::{
+    Claim, Conflict, ConflictClaim, ImportCounts, ImportReport, Imported, Observations, Skipped,
+    SourceRef, Sources,
 };
 use serde::Serialize;
 use std::collections::{BTreeMap, BTreeSet, HashSet};
@@ -146,17 +146,17 @@ fn import(strica_dir: &Path, eternl_dir: &Path, out: &Path) -> Result<()> {
         },
     };
 
-    let registry = Registry {
-        format: 1,
+    let imported = Imported {
+        format: address_registry_schema::FORMAT,
         generated_at: generated_at.clone(),
         sources: sources.clone(),
         credentials: by_credential,
     };
-    let report = Report {
-        format: 1,
+    let report = ImportReport {
+        format: address_registry_schema::FORMAT,
         generated_at,
         sources,
-        counts: Counts {
+        counts: ImportCounts {
             credentials,
             claims,
             claimed_by_both_sources: from_both,
@@ -176,7 +176,7 @@ fn import(strica_dir: &Path, eternl_dir: &Path, out: &Path) -> Result<()> {
     let registry_path = out.join("registry.json");
     let report_path = out.join("report.json");
     fs::create_dir_all(out).map_err(|error| Error::at(out, error))?;
-    write_json(&registry_path, &registry)?;
+    write_json(&registry_path, &imported)?;
     write_json(&report_path, &report)?;
 
     println!("credentials  {}", report.counts.credentials);
@@ -291,7 +291,7 @@ fn value(rest: &mut impl Iterator<Item = String>, flag: &str) -> Result<String> 
         .ok_or_else(|| Error::new(format!("{flag} needs a value")))
 }
 
-fn write_json<T: Serialize>(path: &Path, value: &T) -> Result<()> {
+pub(crate) fn write_json<T: Serialize>(path: &Path, value: &T) -> Result<()> {
     let mut text = serde_json::to_string_pretty(value)?;
     text.push('\n');
     fs::write(path, text).map_err(|error| Error::at(path, error))

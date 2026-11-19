@@ -91,6 +91,35 @@ The tool writes:
   `report.json` under `observations.eternl_script_index`, and none of it is
   imported.
 
+## Using it from another repo
+
+Two different things, and keeping them apart is the point:
+
+| you want | depend on | changes when |
+| --- | --- | --- |
+| the shape of the files | `address-registry-schema` (this repo) | a field, kind or shape is added |
+| the registry itself | `resolved/registry.json` (hosted) | a contract is added or renamed |
+
+The crate is the schema, not the data. `address-registry-schema` has no I/O, no
+network and one dependency (`serde`):
+
+```rust
+let resolved: address_registry_schema::Resolved = serde_json::from_str(&text)?;
+if resolved.format != address_registry_schema::FORMAT {
+    // a file from a newer schema than this build understands
+}
+if let Some(behaviour) = resolved.behaviour(&credential) {
+    // behaviour.kind, .shape, .label, .project, .derived_from, .source
+}
+let names = resolved.claims(&credential); // empty when nobody upstream claims it
+```
+
+A consumer that pins the crate therefore stops doing the thing that was fragile:
+adding a contract to the registry no longer needs a rev bump anywhere. Adding a
+*field* does, and bumps `format`, because deserialisation rejects keys it does
+not know rather than reading a registry it only half understands. The same rule
+is what makes a typo in a `contracts/*.toml` an error instead of a silent drop.
+
 ## Status
 
 The import layer and the authored layer are in place. The published artefact

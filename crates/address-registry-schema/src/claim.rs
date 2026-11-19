@@ -11,7 +11,7 @@
 use serde::ser::{Serialize, SerializeStruct, Serializer};
 use std::cmp::Ordering;
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Source {
     Strica,

@@ -1,0 +1,9 @@
+[package]
+name = "address-registry-schema"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Wire types for the address registry: the schema, not the data"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }

@@ -6,9 +6,17 @@ version = 4
 name = "address-registry"
 version = "0.1.0"
 dependencies = [
+ "address-registry-schema",
  "serde",
  "serde_json",
  "toml",
+]
+
+[[package]]
+name = "address-registry-schema"
+version = "0.1.0"
+dependencies = [
+ "serde",
 ]
 
 [[package]]

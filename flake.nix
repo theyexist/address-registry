@@ -126,9 +126,9 @@
             version = (lib.importTOML ./Cargo.toml).package.version;
             src = source;
             cargoLock.lockFile = ./Cargo.lock;
-            buildPhase = "cargo build --offline";
+            buildPhase = "cargo build --workspace --offline";
             doCheck = true;
-            checkPhase = "cargo test --offline";
+            checkPhase = "cargo test --workspace --offline";
             installPhase = "touch $out";
           };
 
